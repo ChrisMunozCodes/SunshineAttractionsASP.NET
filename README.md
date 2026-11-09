@@ -129,6 +129,16 @@ This repository now runs as an ASP.NET Core 8 MVC application rather than the Ex
 
 The MongoDB document field names and bcrypt password hashes are compatible with the original Node application, so the existing database can be reused. The old Node/EJS source is retained only as a migration reference; it is no longer the application entry point.
 
+## Deploying to Render
+
+The repository includes a `Dockerfile`, because Render deploys .NET applications through its Docker runtime. Create a **Web Service** from your GitHub repository, select **Docker**, then add these environment variables in Render's **Environment** tab (do not upload `config/.env`):
+
+- `ConnectionStrings__MongoDb`
+- `GoogleMaps__ApiKey`
+- `GoogleMaps__MapId`
+
+Render supplies `PORT` automatically. Use `/` as the health-check path.
+
 # Things to add (Wish list)
 - ~~Maps of theme parks with wait time markers and user geolocation (High Priority).~~
 - Lowest wait time rides near the user based on the users location within the theme park map. (High Priority).
