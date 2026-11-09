@@ -1,0 +1,395 @@
+<!-- Desktop Version -->
+<!DOCTYPE html>
+<html lang="en" class="box-border">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sunshine Attractions</title>
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/imgs/favicon-32x32.png"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+      integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
+      crossorigin="anonymous"
+    />
+    <!-- Google Fonts (Kara 500 & Merriweather 400) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Karla:wght@500&family=Merriweather&display=swap" rel="stylesheet">
+
+    <script src="/js/main.js"></script>
+    <link rel="stylesheet" href="/css/output.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <!-- <script>
+      const backendApiUrl = 'https://sunshine-attractions-mkbs.onrender.com/wait-times';
+          fetch(backendApiUrl)
+            .then((response) => response.json())
+            .then((data) => {
+              console.log(data)
+              // API Lands data
+              let frontierland = data.lands[2];
+              let libertySquare = data.lands[3];
+              let tomorrowland = data.lands[5];
+              let fantasyland = data.lands[1];
+              let adventureland = data.lands[0];
+              // API Rides for specific lands
+              let ridesFantasyland = fantasyland.rides;
+              let ridesTomorrowland = tomorrowland.rides;
+              let ridesLibertySquare = libertySquare.rides;
+              let ridesFrontierland = frontierland.rides;
+              let ridesAdventureland = adventureland.rides;
+              // Thunder Mountain Wait Time Code
+              let thunderMountain = ridesFrontierland.find((ride) => ride.name === "Big Thunder Mountain Railroad");
+              let thunderMountainWait = thunderMountain.wait_time
+              //
+    
+              // Haunted Mansion Wait Time Code
+              let hauntedMansion = ridesLibertySquare.find((ride) => ride.name === "Haunted Mansion");
+              let hauntedMansionWait = hauntedMansion.wait_time
+              //
+    
+              // Space Mountain Wait Time Code
+              let spaceMountain = ridesTomorrowland.find((ride) => ride.name === "Space Mountain");
+              let spaceMountainWait = spaceMountain.wait_time
+              //
+    
+              // Seven Dwarfs Mine Train Wait Time Code 
+              let mineTrain = ridesFantasyland.find((ride) => ride.name === "Seven Dwarfs Mine Train");
+              //
+    
+              // Pirates of the Caribbean Wait Time Code 
+              let pirates = ridesAdventureland.find((ride) => ride.name === "Pirates of the Caribbean");
+              //    
+    
+              // Jungle Cruise Wait Time Code 
+              let jungle = ridesAdventureland.find((ride) => ride.name === "Jungle Cruise");
+              //
+              
+              // Dumbo the Flying Elephant Wait Time Code 
+              let dumbo = ridesFantasyland.find((ride) => ride.name === "Dumbo the Flying Elephant");
+              //
+              
+              // Tomorrowland Transit Authority PeopleMover Wait Time Code 
+              let peoplemover = ridesTomorrowland.find((ride) => ride.name === "Tomorrowland Transit Authority PeopleMover");
+              //
+    
+              // It's a small world Wait Time Code 
+              let smallWorld = ridesFantasyland.find((ride) => ride.name === `"it's a small world"`);
+              //
+    
+              // Prince Charming Regal Carrousel Wait Time Code 
+              let carrousel = ridesFantasyland.find((ride) => ride.name === "Prince Charming Regal Carrousel");
+              //
+    
+              // Peter Pan's Flight Wait Time Code 
+              let peterPan = ridesFantasyland.find((ride) => ride.name === "Peter Pan's Flight");
+              //
+    
+              // Under the Sea - Journey of the Little Mermaid Wait Time Code 
+              let mermaid = ridesFantasyland.find((ride) => ride.name === "Under the Sea - Journey of The Little Mermaid");
+              //
+    
+              // The barnstormer Wait Time Code 
+              let barnstormer = ridesFantasyland.find((ride) => ride.name === "The Barnstormer");
+              //
+    
+              // The Magic Carpets of Aladdin Wait Time Code 
+              let aladdin = ridesAdventureland.find((ride) => ride.name === "The Magic Carpets of Aladdin");
+              let aladdinTest = aladdin.wait_time
+            })
+            .catch((error) => console.error("Error fetching data:", error));
+     
+    </script> -->
+  </head>
+
+  <div class="desktop-container w-screen h-screen">
+    
+<!-- Nav Bar -->   
+<%- include('partials/header') -%>
+
+<main class="flex justify-center items-top w-full h-auto">
+
+<div id="map" class="h-[80vh] w-[90vw]">
+
+  <!-- <% for (let i = 0; i < rides.length; i++) { %>
+    <div id='custom-info-window' class="hidden w-auto h-40 flex-col justify-center align-center  text-center">
+      <section class="flex flex-col justify-center align-center">
+        <h1 class="text-xl">hi</h1>
+        <p class="text-sm">hi</p>
+      </section>
+    </div>
+  <% } %> -->
+
+</div>
+<script>
+  let map;
+
+async function initMap(data) {
+
+  // The location of Uluru
+  const position = { lat: 28.418741718041893, lng: -81.58121440549618 };
+  // Request needed libraries.
+  //@ts-ignore
+  const { Map, InfoWindow } = await google.maps.importLibrary("maps");
+  const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker");
+
+  // The map, centered at Uluru
+  map = new Map(document.getElementById("map"), {
+    zoom: 16.5,
+    center: position,
+    mapId: "67f6a68d9f0f5af7",
+  });
+
+  const infoWindow1 = new google.maps.InfoWindow({
+    content: "",
+    disableAutoPan: true,
+  });
+
+  const infoWindow = new google.maps.InfoWindow({
+    content: "",
+    disableAutoPan: true,
+  });
+
+// Ride Markers
+const spaceMountainMarker = new AdvancedMarkerElement({
+  map: map,
+  position: { lat: 28.4190, lng: -81.5775 },
+  title: "Space Mountain",
+});
+
+const hauntedMansionMarker = new AdvancedMarkerElement({
+  map: map,
+  position: { lat: 28.4209, lng: -81.5829 },
+  title: "Haunted Mansion",
+});
+
+const splashMountainMarker = new AdvancedMarkerElement({
+  map: map,
+  position: { lat: 28.4192, lng: -81.5852 },
+  title: "Splash Mountain",
+});
+
+const bigThunderMountainMarker = new AdvancedMarkerElement({
+  map: map,
+  position: { lat: 28.4198, lng: -81.5856 },
+  title: "Big Thunder Mountain Railroad",
+});
+
+const piratesOfCaribbeanMarker = new AdvancedMarkerElement({
+  map: map,
+  position: { lat: 28.4180, lng: -81.5845 },
+  title: "Pirates of the Caribbean",
+});
+
+const peterPanFlightMarker = new AdvancedMarkerElement({
+  map: map,
+  position: { lat: 28.4204, lng: -81.5812 },
+  title: "Peter Pan's Flight",
+});
+
+const sevenDwarfsMineTrainMarker = new AdvancedMarkerElement({
+  map: map,
+  position: { lat: 28.4206, lng: -81.5785 },
+  title: "Seven Dwarfs Mine Train",
+});
+
+const jungleCruiseMarker = new AdvancedMarkerElement({
+  map: map,
+  position: { lat: 28.4194, lng: -81.5833 },
+  title: "Jungle Cruise",
+});
+
+const itSmallWorldMarker = new AdvancedMarkerElement({
+  map: map,
+  position: { lat: 28.4206, lng: -81.5823 },
+  title: "It's a Small World",
+});
+
+const enchantedTikiRoomMarker = new AdvancedMarkerElement({
+  map: map,
+  position: { lat: 28.4187, lng: -81.5838 },
+  title: "Walt Disney's Enchanted Tiki Room",
+});
+
+const buzzLightyearMarker = new AdvancedMarkerElement({
+  map: map,
+  position: { lat: 28.4177, lng: -81.5769 },
+  title: "Buzz Lightyear's Space Ranger Spin",
+});
+
+const carouselOfProgressMarker = new AdvancedMarkerElement({
+  map: map,
+  position: { lat: 28.4172, lng: -81.5765 },
+  title: "Walt Disney's Carousel of Progress",
+});
+
+const dumboMarker = new AdvancedMarkerElement({
+  map: map,
+  position: { lat: 28.4187, lng: -81.5761 },
+  title: "Dumbo the Flying Elephant",
+});
+
+const barnstormerMarker = new AdvancedMarkerElement({
+  map: map,
+  position: { lat: 28.4194, lng: -81.5756 },
+  title: "The Barnstormer",
+});
+
+const madTeaPartyMarker = new AdvancedMarkerElement({
+  map: map,
+  position: { lat: 28.4199, lng: -81.5780 },
+  title: "Mad Tea Party",
+});
+
+const tomorrowlandSpeedwayMarker = new AdvancedMarkerElement({
+  map: map,
+  position: { lat: 28.4172, lng: -81.5776 },
+  title: "Tomorrowland Speedway",
+});
+
+const underSeaJourneyMarker = new AdvancedMarkerElement({
+  map: map,
+  position: { lat: 28.4214, lng: -81.5796 },
+  title: "Under the Sea ~ Journey of The Little Mermaid",
+});
+
+// Ride Windows
+
+spaceMountainMarker.addListener("click", () => {
+  console.log(data);
+  infoWindow.setContent("Space Mountain" + " Wait Time: " + `${data.lands[5].rides[3].wait_time}`);
+  infoWindow.open(map, spaceMountainMarker);
+});
+
+hauntedMansionMarker.addListener("click", () => {
+  console.log(data);
+  infoWindow.setContent("Haunted Mansion" + " Wait Time: " + `${data.lands[3].rides[0].wait_time}`);
+  infoWindow.open(map, hauntedMansionMarker);
+});
+
+splashMountainMarker.addListener("click", () => {
+  console.log(data);
+  infoWindow.setContent("Splash Mountain" + " Wait Time: " + `${data.lands[4].rides[1].wait_time}`);
+  infoWindow.open(map, splashMountainMarker);
+});
+
+bigThunderMountainMarker.addListener("click", () => {
+  console.log(data);
+  infoWindow.setContent("Big Thunder Mountain Railroad" + " Wait Time: " + `${data.lands[4].rides[0].wait_time}`);
+  infoWindow.open(map, bigThunderMountainMarker);
+});
+
+piratesOfCaribbeanMarker.addListener("click", () => {
+  console.log(data);
+  infoWindow.setContent("Pirates of the Caribbean" + " Wait Time: " + `${data.lands[4].rides[2].wait_time}`);
+  infoWindow.open(map, piratesOfCaribbeanMarker);
+});
+
+peterPanFlightMarker.addListener("click", () => {
+  console.log(data);
+  infoWindow.setContent("Peter Pan's Flight" + " Wait Time: " + `${data.lands[3].rides[1].wait_time}`);
+  infoWindow.open(map, peterPanFlightMarker);
+});
+
+sevenDwarfsMineTrainMarker.addListener("click", () => {
+  console.log(data);
+  infoWindow.setContent("Seven Dwarfs Mine Train" + " Wait Time: " + `${data.lands[5].rides[0].wait_time}`);
+  infoWindow.open(map, sevenDwarfsMineTrainMarker);
+});
+
+jungleCruiseMarker.addListener("click", () => {
+  console.log(data);
+  infoWindow.setContent("Jungle Cruise" + " Wait Time: " + `${data.lands[4].rides[3].wait_time}`);
+  infoWindow.open(map, jungleCruiseMarker);
+});
+
+itSmallWorldMarker.addListener("click", () => {
+  console.log(data);
+  infoWindow.setContent("It's a Small World" + " Wait Time: " + `${data.lands[3].rides[2].wait_time}`);
+  infoWindow.open(map, itSmallWorldMarker);
+});
+
+enchantedTikiRoomMarker.addListener("click", () => {
+  console.log(data);
+  infoWindow.setContent("Walt Disney's Enchanted Tiki Room" + " Wait Time: " + `${data.lands[4].rides[4].wait_time}`);
+  infoWindow.open(map, enchantedTikiRoomMarker);
+});
+
+buzzLightyearMarker.addListener("click", () => {
+  console.log(data);
+  infoWindow.setContent("Buzz Lightyear's Space Ranger Spin" + " Wait Time: " + `${data.lands[5].rides[2].wait_time}`);
+  infoWindow.open(map, buzzLightyearMarker);
+});
+
+carouselOfProgressMarker.addListener("click", () => {
+  console.log(data);
+  infoWindow.setContent("Walt Disney's Carousel of Progress" + " Wait Time: " + `${data.lands[5].rides[1].wait_time}`);
+  infoWindow.open(map, carouselOfProgressMarker);
+});
+
+dumboMarker.addListener("click", () => {
+  console.log(data);
+  infoWindow.setContent("Dumbo the Flying Elephant" + " Wait Time: " + `${data.lands[2].rides[0].wait_time}`);
+  infoWindow.open(map, dumboMarker);
+});
+
+barnstormerMarker.addListener("click", () => {
+  console.log(data);
+  infoWindow.setContent("The Barnstormer" + " Wait Time: " + `${data.lands[2].rides[1].wait_time}`);
+  infoWindow.open(map, barnstormerMarker);
+});
+
+madTeaPartyMarker.addListener("click", () => {
+  console.log(data);
+  infoWindow.setContent("Mad Tea Party" + " Wait Time: " + `${data.lands[3].rides[3].wait_time}`);
+  infoWindow.open(map, madTeaPartyMarker);
+});
+
+tomorrowlandSpeedwayMarker.addListener("click", () => {
+  console.log(data);
+  infoWindow.setContent("Tomorrowland Speedway" + " Wait Time: " + `${data.lands[5].rides[4].wait_time}`);
+  infoWindow.open(map, tomorrowlandSpeedwayMarker);
+});
+
+underSeaJourneyMarker.addListener("click", () => {
+  console.log(data);
+  infoWindow.setContent("Under the Sea ~ Journey of The Little Mermaid" + " Wait Time: " + `${data.lands[2].rides[2].wait_time}`);
+  infoWindow.open(map, underSeaJourneyMarker);
+});
+
+// Return the marker (optional, depending on how you're handling markers)
+return marker;
+
+
+}
+
+
+const backendApiUrl = 'https://sunshine-attractions-mkbs.onrender.com/wait-times';
+          fetch(backendApiUrl)
+            .then((response) => response.json())
+            .then((data) => {
+initMap(data);
+})
+</script>
+
+  <footer class="absolute inset-x-0 bottom-0 bg-white text-center p-4 z-10">
+    <!-- Footer content here -->
+    <div>
+      Footer Content Here
+    </div>
+  </footer>
+
+</main>
+
+<script>(g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})
+  ({key: process.env.GOOGLE_MAP_API, v: "weekly"});</script>
+
+<script src="assets/js/map-scripts/magic-kingdom.js"></script>
+<script src="<%= mapAPIURL %>"></script>
+</html>

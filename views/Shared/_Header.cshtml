@@ -1,0 +1,27 @@
+@{ var loggedIn = User.Identity?.IsAuthenticated == true; }
+<header>
+  <nav class="site-nav">
+    <a class="site-brand" href="/"><img src="/assets/image/Sunshine%20Attractions-logo/sunshine-logo-transparent%20(2).png" alt="Sunshine Attractions" /></a>
+    <button id="mobile-menu-button" class="site-menu-toggle" aria-label="Open navigation menu" aria-expanded="false">☰</button>
+    <div class="site-links">
+      <a href="/" class="site-link">EXPLORE</a>
+      <a href="/map/maps" class="site-link">MAPS</a>
+      @if (loggedIn)
+      {
+        <a href="/profile" class="site-link site-user">@User.Identity!.Name</a>
+        <a href="/logout" class="site-action site-action--outline">LOG OUT</a>
+      }
+      else
+      {
+        <a href="/login" class="site-link">LOG IN</a>
+        <a href="/signup" class="site-action">CREATE ACCOUNT</a>
+      }
+    </div>
+  </nav>
+  <div id="mobile-menu" class="site-mobile-menu">
+    <a href="/">EXPLORE</a><a href="/map/maps">MAPS</a>
+    @if (loggedIn) { <a href="/profile">PROFILE</a><a href="/logout">LOG OUT</a> }
+    else { <a href="/login">LOG IN</a><a href="/signup">CREATE ACCOUNT</a> }
+  </div>
+</header>
+<script>document.getElementById('mobile-menu-button')?.addEventListener('click',event=>{const menu=document.getElementById('mobile-menu');const open=menu.classList.toggle('is-open');event.currentTarget.setAttribute('aria-expanded',open)});</script>

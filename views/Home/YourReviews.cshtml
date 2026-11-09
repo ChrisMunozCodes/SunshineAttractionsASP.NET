@@ -1,0 +1,3 @@
+@model IReadOnlyList<ReviewCard>
+@{ ViewData["Title"] = "Your reviews"; }
+<main class="max-w-5xl mx-auto p-5"><h1 class="text-4xl mb-6">Your reviews</h1>@if (!Model.Any()) { <p class="alert">You have not written any reviews yet.</p> }@foreach (var card in Model) { <article class="card bg-base-100 shadow mb-5"><div class="card-body"><h2 class="card-title">@card.Review.Page <span class="badge">@card.Review.Rating / 5</span></h2><p>@card.Review.Description</p><div class="card-actions"><a class="btn btn-sm" href="/page/@card.Review.Page">View attraction</a><form action="/review/deleteReview/@card.Review.Id" method="post"><button class="btn btn-sm btn-error" onclick="return confirm('Delete this review?')">Delete</button></form></div></div></article>}</main>

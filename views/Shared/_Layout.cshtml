@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>@ViewData["Title"] - Sunshine Attractions</title>
+  <link rel="icon" type="image/png" href="/imgs/favicon-32x32.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Karla:wght@500&family=Merriweather&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/output.css" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/app.css" />
+</head>
+<body>
+  <partial name="_Header" />
+  @if (TempData["Error"] is string error) { <div class="app-alert">@error</div> }
+  @RenderBody()
+  @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

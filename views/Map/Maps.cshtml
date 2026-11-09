@@ -1,0 +1,3 @@
+@{ ViewData["Title"] = "Maps"; }
+<main class="flex justify-center p-10"><section class="card bg-gray-100 shadow-xl w-full max-w-lg"><div class="card-body"><h1 class="text-3xl">Park maps</h1><p>Find attractions and compare nearby wait times.</p><form onsubmit="goToMap(event)" class="grid gap-3"><select id="locationSelect" class="select select-bordered"><option value="">Choose a park</option><option value="/map/magickingdom-maps">Magic Kingdom</option></select><button class="btn bg-primaryButton text-black">Open map</button></form></div></section></main>
+@section Scripts { <script>function goToMap(e){e.preventDefault();const v=document.getElementById('locationSelect').value;if(v)location.href=v}</script> }

@@ -1,0 +1,319 @@
+<!-- Desktop Version -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sunshine Attractions</title>
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/imgs/favicon-32x32.png"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+      integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
+      crossorigin="anonymous"
+    />
+    <!-- Google Fonts (Kara 500 & Merriweather 400) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Karla:wght@500&family=Merriweather&display=swap" rel="stylesheet">
+
+    <script src="/js/main.js"></script>
+    <link rel="stylesheet" href="/css/output.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="assets/js/animate-blur.js">
+  </head>
+    <div class="desktop-container w-screen h-screen overflow-auto box-border">
+
+    <!-- Nav Bar -->   
+    <%- include('partials/header') -%>
+
+    <main class="w-full h-auto 812breakpoint:h-2/3 overflow-none box-border flex flex-col">
+      <!-- Container -->
+
+        <section class="bg-black font-karla w-screen h-1/3 border-primaryButton border-8  overflow-none box-border relative ">
+          <div class="w-full h-full absolute inset-0 transition-all duration-1000 bg-black opacity-0 animate-fade-in"></div>
+          <div class="w-full h-full relative">
+            <video class="w-full h-full object-cover animate-blur" autoplay loop muted>
+              <source src="/assets/image/Sunshine Attractions-logo/rollercoaster.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+            <span id="typed-text" class="w-full flex justify-center items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white  xl:text-8xl lg:text-5xl md:text-3xl sm:text-xl font-bold font-karla"></span>
+          </div>
+        </section>
+        
+        <style>
+          @keyframes blurAnimation {
+            0% {
+              filter: blur(0);
+            }
+            100% {
+              filter: blur(10px);
+            }
+          }
+          
+          @keyframes fadeAnimation {
+            100% {
+              opacity: .2;
+            }
+            0% {
+              opacity: 1;
+            }
+          }
+        
+          .animate-blur {
+            animation: blurAnimation 7s forwards, fadeAnimation 8s forwards;
+          }
+        </style>
+        
+        <script>
+          const text = "Discover Magic Kingdom";
+          const typedTextElement = document.getElementById('typed-text');
+          let index = 0;
+          let typingInterval;
+        
+          function startTyping() {
+            typingInterval = setInterval(typeCharacter, 150);
+          }
+        
+          function typeCharacter() {
+            if (index < text.length) {
+              typedTextElement.textContent += text.charAt(index);
+              index++;
+            } else {
+              clearInterval(typingInterval);
+            }
+          }
+        
+          startTyping();
+        </script>
+        
+          
+          <!-- listings -->
+          <section class="w-screen 812breakpoint:h-2/3 box-border overflow-auto">
+            <ul class="flex-none 812breakpoint:flex box-border overflow-auto h-auto">
+              <li class="flex-1 m-5 text-center justify-center items-center overflow-auto box-border">
+                  <a id="ride-selection">
+                   <div class="card w-full h-full bg-base-100 shadow-xl image-full">
+                     <figure><img src="/assets/image/Sunshine Attractions-logo/8731_castle_landing_page_image_nu_2a8f8e6a-a1f9-45fd-8eca-596c92d04a7c.jpeg" alt="Rides" /></figure>
+                     <div class="card-body p-0 overflow-auto flex w-full h-full justify-center items-center">
+                      <section class="p-5">
+                        <h2 class="card-title xl:text-5xl lg:text-3xl md:text-2xl sm:text-xl font-karla">RIDES</h2>
+                      </section>
+      
+                      <section class="card-actions justify-center w-full p-5">
+                       <button class="btn btn-primary bg-primaryButton text-black border-white w-full hover:bg-black hover:text-white hover:border-white selection-rides-btn">Discover</button>
+                      </section>
+                     </div>
+                   </div>
+                  </a>
+              </li>
+              <li class="flex-1 m-5 text-center justify-center items-center overflow-auto box-border">
+               <a id="food-selection">
+                <div class="card w-full h-full bg-base-100 shadow-xl image-full">
+                  <figure><img src="/assets/image/Sunshine Attractions-logo/disney-magickingdom-food.jpg" alt="Shoes" /></figure>
+                  <div class="card-body p-0 overflow-auto flex w-full h-full justify-center items-center">
+    
+                    <section class="p-5">
+                      <h2 class="card-title xl:text-5xl lg:text-3xl md:text-2xl sm:text-xl font-karla">FOOD</h2>
+                    </section>
+    
+                    <section class="card-actions justify-center w-full p-5">
+                     <button class="btn btn-primary bg-primaryButton text-black border-white w-full hover:bg-black hover:text-white hover:border-white selection-food-btn">Discover</button>
+                    </section>
+    
+                  </div>
+                </div>
+               </a>
+           </li>
+         <li class="flex-1 m-5 text-center justify-center items-center overflow-auto box-border">
+           <a id="show-selection">
+            <div class="card w-full h-full bg-base-100 shadow-xl image-full">
+              <figure><img src="/assets/image/Sunshine Attractions-logo/disney-magickingdom-shows.jpg" alt="Shoes" /></figure>
+              <div class="card-body p-0 overflow-auto flex w-full h-full justify-center items-center">
+    
+                <section class="p-5">
+                  <h2 class="card-title lg:text-3xl md:text-2xl sm:text-xl font-karla">SHOWS<h2>
+                </section>
+    
+                <section class="card-actions justify-center w-full p-5">
+                 <button class="btn btn-primary bg-primaryButton text-black border-white w-full hover:bg-black hover:text-white hover:border-white selection-shows-btn">Discover</button>
+                </section>
+    
+              </div>
+            </div>
+           </a>
+       </li>
+     </ul>
+    </section>
+    </main>
+                <!-- Pre-selection text -->
+                <span id="typed-text2" class="w-full flex justify-center items-center text-black  xl:text-xl lg:text-xl md:text-xl sm:text-xl font-karla"></span>
+
+                <script>
+                  const text2 = "Make a selection...";
+                  const typedTextElement2 = document.getElementById('typed-text2');
+                  let index2 = 0;
+                  let typingInterval2;
+                  let isForward = true;
+          
+                  function startTyping2() {
+                      typingInterval2 = setInterval(typeCharacter, 150);
+                  }
+          
+                  function typeCharacter() {
+                      if (isForward) {
+                          if (index2 < text2.length) {
+                              typedTextElement2.textContent += text2.charAt(index2);
+                              index2++;
+                          } else {
+                              isForward = false;
+                              index2 = text2.length - 1;
+                          }
+                      } else {
+                          if (index2 >= 0) {
+                              typedTextElement2.textContent = text2.substring(0, index2);
+                              index2--;
+                          } else {
+                              isForward = true;
+                              index2 = 0;
+                          }
+                      }
+                  }
+          
+                  startTyping2();
+              </script>
+
+                <!-- Ride, Food, Show selection text -->
+                <div id="selection-text" class="flex justify-center items-center xl:text-2xl l:text-l md:text-md sm:text-sm font-karla hidden">
+                  <h2>All Rides</h2>
+                </div>
+    <section id="selection-area" class="overflow-auto box-border w-screen h-auto flex flex-col hidden">
+      <% for (let i = 0; i < rideSections.length; i++) { %>
+        <!-- Ride Selection Start -->
+        <div class="ride border border-gray-100 w-full 812breakpoint:h-40 overflow-auto box-border 812breakpoint:flex p-3">
+          <div class="812breakpoint:w-1/12 flex justify-center items-center">
+            <h3 class="text-4xl"><%= i + 1 %></h3>
+          </div>
+          <div class="812breakpoint:w-2/12 flex justify-center items-center">
+            <img class="h-5/6 w-full" src="<%= rideSections[i].src %>" alt="<%= rideSections[i].name %> Disney Magic Kingdom">
+          </div>
+          <div class="812breakpoint:w-3/12 flex justify-center items-center">
+            <h2 class="text-2xl flex-wrap text-center"><%= rideSections[i].name %></h2>
+          </div>
+          <div class="812breakpoint:w-3/12 flex justify-center items-center">
+            <p class="text-1xl"><%= rideSections[i].description %></p>
+          </div>
+          <% if (rideSections[i].rating > 0) { %>
+          <div class="rating m-1 items-center justify-center 812breakpoint:w-3/12 flex justify-center items-center">
+            <input value="1" type="radio" name="ride-rating-<%= i %>" class="mask mask-star-2 bg-orange-400 m-1 w-10 h-10" <%= rideSections[i].rating === 1 ? 'checked' : '' %> />
+            <input value="2" type="radio" name="ride-rating-<%= i %>" class="mask mask-star-2 bg-orange-400 m-1 w-10 h-10" <%= rideSections[i].rating === 2 ? 'checked' : '' %> />
+            <input value="3" type="radio" name="ride-rating-<%= i %>" class="mask mask-star-2 bg-orange-400 m-1 w-10 h-10" <%= rideSections[i].rating === 3 ? 'checked' : '' %> />
+            <input value="4" type="radio" name="ride-rating-<%= i %>" class="mask mask-star-2 bg-orange-400 m-1 w-10 h-10" <%= rideSections[i].rating === 4 ? 'checked' : '' %> />
+            <input value="5" type="radio" name="ride-rating-<%= i %>" class="mask mask-star-2 bg-orange-400 m-1 w-10 h-10" <%= rideSections[i].rating === 5 ? 'checked' : '' %> />
+            <!-- Add more rating inputs as needed -->
+          </div>
+          <% } else { %>
+            <div class="rating m-1 items-center justify-center 812breakpoint:w-3/12 flex justify-center items-center">
+              <p>Not yet rated</p>
+            </div>
+          <% } %>
+          <a class="812breakpoint:w-1/12 flex justify-center items-center" href="<%= rideSections[i].buttonSrc %>">
+            <button class="bg-primaryButton border rounded-md shadow-sm font-merriweather w-full h-full hover:bg-black hover:text-white hover:border-white">EXPLORE</button>
+          </a>
+        </div>
+        <!-- Ride Selection End -->
+      <% } %>
+
+      <% for (let i = 0; i < foodSections.length; i++) { %>
+        <!-- Food Selection Start -->
+        <div class="food border border-gray-100 w-full 812breakpoint:h-40 overflow-auto box-border 812breakpoint:flex p-3">
+          <div class="812breakpoint:w-1/12 flex justify-center items-center">
+            <h3 class="text-4xl"><%= i + 1 %></h3>
+          </div>
+          <div class="812breakpoint:w-2/12 flex justify-center items-center">
+            <img class="h-5/6 w-full" src="<%= foodSections[i].src %>" alt="<%= foodSections[i].name %> Disney Magic Kingdom">
+          </div>
+          <div class="812breakpoint:w-3/12 flex justify-center items-center">
+            <h2 class="text-2xl flex-wrap text-center"><%= foodSections[i].name %></h2>
+          </div>
+          <div class="812breakpoint:w-3/12 flex justify-center items-center">
+            <p class="text-1xl"><%= foodSections[i].description %></p>
+          </div>
+          <!-- You can add the rating input for food sections if needed -->
+          <% if (foodSections[i].rating > 0) { %>
+          <div class="rating m-1 items-center justify-center 812breakpoint:w-3/12 flex justify-center items-center">
+            <input value="1" type="radio" name="food-rating-<%= i %>" class="mask mask-star-2 bg-orange-400 m-1 w-10 h-10" <%= foodSections[i].rating === 1 ? 'checked' : '' %> />
+            <input value="2" type="radio" name="food-rating-<%= i %>" class="mask mask-star-2 bg-orange-400 m-1 w-10 h-10" <%= foodSections[i].rating === 2 ? 'checked' : '' %> />
+            <input value="3" type="radio" name="food-rating-<%= i %>" class="mask mask-star-2 bg-orange-400 m-1 w-10 h-10" <%= foodSections[i].rating === 3 ? 'checked' : '' %> />
+            <input value="4" type="radio" name="food-rating-<%= i %>" class="mask mask-star-2 bg-orange-400 m-1 w-10 h-10" <%= foodSections[i].rating === 4 ? 'checked' : '' %> />
+            <input value="5" type="radio" name="food-rating-<%= i %>" class="mask mask-star-2 bg-orange-400 m-1 w-10 h-10" <%= foodSections[i].rating === 5 ? 'checked' : '' %> />
+            <!-- Add more rating inputs as needed -->
+          </div>
+          <% } else { %>
+            <div class="rating m-1 items-center justify-center 812breakpoint:w-3/12 flex justify-center items-center">
+              <p>Not yet rated</p>
+            </div>
+          <% } %>
+      
+          <a class="812breakpoint:w-1/12 flex justify-center items-center" href="<%= foodSections[i].buttonSrc %>">
+            <button class="bg-primaryButton border rounded-md shadow-sm font-merriweather w-full h-full hover:bg-black hover:text-white hover:border-white">EXPLORE</button>
+          </a>
+        </div>
+        <!-- Food Selection End -->
+      <% } %>
+
+      <% for (let i = 0; i < showSections.length; i++) { %>
+        <!-- Show Selection Start -->
+        <div class="show border border-gray-100 w-full 812breakpoint:h-40 overflow-auto box-border 812breakpoint:flex p-3">
+          <div class="812breakpoint:w-1/12 flex justify-center items-center">
+            <h3 class="text-4xl"><%= i + 1 %></h3>
+          </div>
+          <div class="812breakpoint:w-2/12 flex justify-center items-center">
+            <img class="h-5/6 w-full" src="<%= foodSections[i].src %>" alt="<%= foodSections[i].name %> Disney Magic Kingdom">
+          </div>
+          <div class="812breakpoint:w-3/12 flex justify-center items-center">
+            <h2 class="text-2xl flex-wrap text-center"><%= showSections[i].name %></h2>
+          </div>
+          <div class="812breakpoint:w-3/12 flex justify-center items-center">
+            <p class="text-1xl"><%= showSections[i].description %></p>
+          </div>
+          <!-- You can add the rating input for food sections if needed -->
+          <% if (foodSections[i].rating > 0) { %>
+          <div class="rating m-1 items-center justify-center 812breakpoint:w-3/12 flex justify-center items-center">
+            <input value="1" type="radio" name="show-rating-<%= i %>" class="mask mask-star-2 bg-orange-400 m-1 w-10 h-10" <%= showSections[i].rating === 1 ? 'checked' : '' %> />
+            <input value="2" type="radio" name="show-rating-<%= i %>" class="mask mask-star-2 bg-orange-400 m-1 w-10 h-10" <%= showSections[i].rating === 2 ? 'checked' : '' %> />
+            <input value="3" type="radio" name="show-rating-<%= i %>" class="mask mask-star-2 bg-orange-400 m-1 w-10 h-10" <%= showSections[i].rating === 3 ? 'checked' : '' %> />
+            <input value="4" type="radio" name="show-rating-<%= i %>" class="mask mask-star-2 bg-orange-400 m-1 w-10 h-10" <%= showSections[i].rating === 4 ? 'checked' : '' %> />
+            <input value="5" type="radio" name="show-rating-<%= i %>" class="mask mask-star-2 bg-orange-400 m-1 w-10 h-10" <%= showSections[i].rating === 5 ? 'checked' : '' %> />
+            <!-- Add more rating inputs as needed -->
+          </div>
+          <% } else { %>
+            <div class="rating m-1 items-center justify-center 812breakpoint:w-3/12 flex justify-center items-center">
+              <p>Not yet rated</p>
+            </div>
+          <% } %>
+      
+          <a class="812breakpoint:w-1/12 flex justify-center items-center" href="<%= showSections[i].buttonSrc %>">
+            <button class="bg-primaryButton border rounded-md shadow-sm font-merriweather w-full h-full hover:bg-black hover:text-white hover:border-white">EXPLORE</button>
+          </a>
+        </div>
+        <!-- Food Selection End -->
+      <% } %>
+                
+    </section>
+</body>
+<script>
+  const stars = document.querySelectorAll('input[type=radio]');
+  stars.forEach((star, index) => {
+    star.disabled = true;
+  });
+</script>
+<script src="/assets/js/show-hide-ride-food-show.js"></script>
+<script src="/assets/js/average-review.js"></script>
+</html>

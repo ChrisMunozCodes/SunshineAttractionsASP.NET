@@ -1,0 +1,20 @@
+@model IReadOnlyList<Attraction>
+@{ ViewData["Title"] = "Magic Kingdom"; var averages = ViewData["Averages"] as Dictionary<string, double> ?? new Dictionary<string, double>(); }
+<main class="app-shell">
+  <section class="selection-hero">
+    <div><p class="eyebrow">WALT DISNEY WORLD · FLORIDA</p><h1>Plan your Magic Kingdom day.</h1><p>Compare visitor ratings, explore every corner of the park, and use the live planner when you are ready to choose your next ride.</p><div class="hero-actions" style="margin-top:1.5rem"><a href="/map/magickingdom-maps" class="hero-primary">Open live ride planner</a></div></div>
+    <img src="/assets/image/Sunshine%20Attractions-logo/8731_castle_landing_page_image_nu_2a8f8e6a-a1f9-45fd-8eca-596c92d04a7c.jpeg" alt="Cinderella Castle at Magic Kingdom" />
+  </section>
+  @foreach (var group in Model.GroupBy(x => x.Category))
+  {
+    <section class="catalog-section">
+      <div class="catalog-section-heading"><h2>@group.Key</h2><span class="catalog-count">@group.Count() places to explore</span></div>
+      <div class="attraction-grid">
+      @foreach (var attraction in group)
+      {
+        <a href="/page/@attraction.Id" class="attraction-card"><figure><img src="@attraction.Image" alt="@attraction.Name" /></figure><div class="attraction-card-body"><h3>@attraction.Name</h3><p>@attraction.Description</p><span class="attraction-rating">@(averages.TryGetValue(attraction.Id, out var average) ? $"★ {average:F1} visitor rating" : "New — no ratings yet")</span></div></a>
+      }
+      </div>
+    </section>
+  }
+</main>

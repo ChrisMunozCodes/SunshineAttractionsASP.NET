@@ -1,0 +1,95 @@
+<!-- Desktop Version -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sunshine Attractions</title>
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/imgs/favicon-32x32.png"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+      integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
+      crossorigin="anonymous"
+    />
+    <!-- Google Fonts (Kara 500 & Merriweather 400) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Karla:wght@500&family=Merriweather&display=swap" rel="stylesheet">
+
+    <script src="/js/main.js"></script>
+    <link rel="stylesheet" href="/css/output.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+
+    <div class="desktop-container w-screen h-screen">
+      
+    <!-- Nav Bar -->   
+    <%- include('partials/header') -%>
+
+  <main class="w-full h-4/5 flex justify-center">
+    <!-- Section for left-side nav bar -->
+    <section class="h-full w-1/4 bg-gray-50">
+      <ul class="menu bg-base-200 w-full h-full">
+        <li><a class="active">Settings</a></li>
+        <li><a href="/your-reviews">Your reviews</a></li>
+        <li><a href="/your-comments">Your comments</a></li>
+        <li><a>Plan a Trip *coming soon*</a></li>
+      </ul>
+    </section>
+<!-- Section for profile pic and welcome message -->
+      <section class="h-full w-4/5 flex justify-center items-center flex-col">
+        <section class="flex justify-center items-center h-3/5 w-full flex-col">
+          <div>
+            <h1 class="text-5xl font-bold">Welcome, <%= user.userName %>!</h1>
+          </div>
+
+          <div class="avatar m-5">
+            <div class="w-20 rounded-full border border-white">
+              <img src="<%= user.profilePic || 'assets/image/Sunshine Attractions-logo/default-profile-pic.png' %>" alt="User Profile Picture" />
+            </div>
+          </div>
+
+
+          <div class="flex">
+            <div class="m-2">
+              <ul class="flex">
+                <li><a href="#">Following:</a></li>
+                <li><a href="#">0</a></li>
+              </ul>
+            </div>
+  
+            <div class="m-2">
+              <ul class="flex">
+                <li><a href="#">Followers:</a></li>
+                <li><a href="#">0</a></li>
+              </ul>
+            </div>
+          </div>
+  
+        </section>
+
+        <!-- Section for profile pic -->
+        <section class="h-2/5 w-full flex">
+            <div class=" w-full h-full flex items-center flex-col">
+              <form action="/updateProfilePicture" enctype="multipart/form-data" method="POST">
+                <div class="mb-3">
+                  <label for="imgUpload" class="form-label">Change your Profile Picture</label>
+                  <input type="file" name="file" class="form-control file-input file-input-bordered file-input-warning w-full max-w-xs" />
+                </div>
+                <button type="submit" value="Upload" class="btn btn-primary bg-primaryButton text-black border-white">Submit</button>
+              </form>
+            </div>
+        </section>
+      </section>
+  </main>
+</div>
+  
+</body>
+</html>

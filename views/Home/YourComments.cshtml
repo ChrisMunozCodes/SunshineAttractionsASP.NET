@@ -1,0 +1,3 @@
+@model IReadOnlyList<CommentCard>
+@{ ViewData["Title"] = "Your comments"; }
+<main class="max-w-5xl mx-auto p-5"><h1 class="text-4xl mb-6">Your comments</h1>@if (!Model.Any()) { <p class="alert">You have not written any comments yet.</p> }@foreach (var card in Model) { <article class="card bg-base-100 shadow mb-5"><div class="card-body"><h2 class="card-title">Comment on @card.Comment.Page</h2><p>@card.Comment.Description</p><div class="card-actions"><a class="btn btn-sm" href="/page/@card.Comment.Page">View attraction</a><form action="/comment/deleteComment/@card.Comment.Id" method="post"><button class="btn btn-sm btn-error" onclick="return confirm('Delete this comment?')">Delete</button></form></div></div></article>}</main>

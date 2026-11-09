@@ -1,0 +1,86 @@
+<!-- Desktop Version -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sunshine Attractions</title>
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/imgs/favicon-32x32.png"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+      integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
+      crossorigin="anonymous"
+    />
+    <!-- Google Fonts (Kara 500 & Merriweather 400) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Karla:wght@500&family=Merriweather&display=swap" rel="stylesheet">
+
+    <script src="/js/main.js"></script>
+    <link rel="stylesheet" href="/css/output.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+
+  <div class="desktop-container w-screen h-screen">
+
+  <!-- Nav Bar -->   
+  <%- include('partials/header') -%>
+
+<main class="flex justify-center items-top w-full h-5/6">
+  
+      <section class="w-full 812breakpoint:w-1/3 812breakpoint:h-3/4 border border-gray-400 p-5 m-10 flex justify-center items-center bg-secondaryButton">
+        <div class="card-body">
+          <div class="form-control">
+            <img class="m-10" src="assets/image/Sunshine Attractions-logo/sunshine-logo-transparent (2).png" alt="Sunshine Attractions Logo">
+            <% if (locals.messages.errors) { %> <% messages.errors.forEach( el => { %>
+              <div class="alert alert-danger"><%= el.msg %></div>
+              <% }) %> <% } %> <% if (locals.messages.info) { %> <%
+              messages.info.forEach( el => { %>
+              <div class="alert alert-info"><%= el.msg %></div>
+              <% }) %> <% } %>
+            <form action="/login" method="POST">
+              <label class="label form-label" for="exampleInputEmail1">
+                <span class="label-text text-lg">Email</span>
+              </label>
+              <input 
+              type="email" 
+              placeholder="email" 
+              class="input input-bordered w-full"
+              id="exampleInputPassword1"
+              name="email"
+              aria-describedby="emailHelp"
+               />
+          </div>
+
+            <div class="form-control">
+              <label class="label" for="exampleInputPassword1">
+                <span class="label-text text-lg">Password</span>
+              </label>
+              <input 
+               placeholder="password"
+               class="input input-bordered" 
+               id="exampleInputPassword1"
+               name="password"
+               type="password"
+               />
+              <label class="label">
+                <a href="/signup" class="label-text-alt link link-hover text-sm">Create an account</a>
+              </label>
+            </div>
+            <div class="form-control mt-6">
+              <button class="btn btn-primary bg-primaryButton text-black border-white hover:bg-black hover:text-white hover:border-white" type="submit">Login</button>
+            </div>
+          </div>
+        </form>
+        </div>
+  </div>
+
+</main>
+</html>
