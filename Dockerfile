@@ -12,6 +12,10 @@ RUN dotnet publish "SunshineAttractions.Web.csproj" -c Release -o /app/publish /
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
 COPY --from=build /app/publish .
+# These legacy folders are served explicitly by Program.cs during the migration.
+COPY --from=build /src/public ./public
+COPY --from=build /src/views/assets ./views/assets
+COPY --from=build /src/dist ./dist
 
 # Render provides PORT at runtime (10000 by default). Its load balancer handles HTTPS.
 ENV ASPNETCORE_ENVIRONMENT=Production
