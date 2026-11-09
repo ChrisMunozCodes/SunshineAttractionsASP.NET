@@ -99,7 +99,12 @@
   }
 
   function toMinutes(wait) { const value = Number.parseInt(wait, 10); return Number.isFinite(value) && value >= 0 ? value : null; }
-  function waitFor(ride) { return liveWaits.get(normalize(ride.name)) ?? toMinutes(ride.wait); }
+  // A saved marker's wait value is not live data. Never render it as a current wait.
+  function waitFor(ride) {
+    const key = normalize(ride.name);
+    const seasonalAliases = { junglecruise: "jinglecruise" };
+    return liveWaits.get(key) ?? liveWaits.get(seasonalAliases[key]) ?? null;
+  }
   function updateMarkers() { rideMarkers.forEach(({ ride, marker }) => { const wait = waitFor(ride); marker.setLabel({ text: wait === null ? "?" : `${wait}m`, color: "#17324d", fontWeight: "700", fontSize: "11px" }); }); }
   function matchesFilters(ride) { return activeFilters.size === 0 || ride.categories.some(category => activeFilters.has(category)); }
   function applyFilters() {

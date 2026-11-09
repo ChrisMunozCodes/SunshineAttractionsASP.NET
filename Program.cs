@@ -66,7 +66,9 @@ app.UseAuthorization();
 
 app.MapGet("/wait-times", async (IHttpClientFactory clients, CancellationToken cancellationToken) =>
 {
-    using var response = await clients.CreateClient().GetAsync("https://queue-times.com/en-US/parks/6/queue_times.json", cancellationToken);
+    using var request = new HttpRequestMessage(HttpMethod.Get, "https://queue-times.com/parks/6/queue_times.json");
+    request.Headers.UserAgent.ParseAdd("SunshineAttractions/1.0 (+https://sunshineattractionsasp-net.onrender.com)");
+    using var response = await clients.CreateClient().SendAsync(request, cancellationToken);
     return response.IsSuccessStatusCode
         ? Results.Content(await response.Content.ReadAsStringAsync(cancellationToken), "application/json")
         : Results.Problem("Unable to fetch wait times.", statusCode: 502);
