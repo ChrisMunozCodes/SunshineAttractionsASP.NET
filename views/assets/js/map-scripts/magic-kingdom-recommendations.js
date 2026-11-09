@@ -88,9 +88,10 @@
       clearTimeout(timeout);
       if (!response.ok) throw new Error("Wait-time service is unavailable.");
       const data = await response.json();
-      liveWaits = new Map((data.lands || []).flatMap(land => land.rides || []).filter(ride => ride.name).map(ride => [normalize(ride.name), toMinutes(ride.wait_time)]));
+      liveWaits = new Map((data.lands || []).flatMap(land => land.rides || []).filter(ride => ride.name).map(ride => [normalize(ride.name), { wait: toMinutes(ride.wait_time), isOpen: ride.is_open !== false }]));
       updateMarkers();
-      setStatus(`Live wait times updated ${new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}.`, "success");
+      const openAttractions = [...liveWaits.values()].filter(ride => ride.isOpen).length;
+      setStatus(openAttractions ? `Live wait times updated ${new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}.` : "Queue-Times currently reports that Magic Kingdom attractions are closed.", openAttractions ? "success" : "");
       if (userPosition) recommendRides();
     } catch (_) {
       setStatus("Live wait times are unavailable right now. You can still view ride locations.", "error");
@@ -100,12 +101,14 @@
 
   function toMinutes(wait) { const value = Number.parseInt(wait, 10); return Number.isFinite(value) && value >= 0 ? value : null; }
   // A saved marker's wait value is not live data. Never render it as a current wait.
-  function waitFor(ride) {
+  function liveDataFor(ride) {
     const key = normalize(ride.name);
     const seasonalAliases = { junglecruise: "jinglecruise" };
     return liveWaits.get(key) ?? liveWaits.get(seasonalAliases[key]) ?? null;
   }
-  function updateMarkers() { rideMarkers.forEach(({ ride, marker }) => { const wait = waitFor(ride); marker.setLabel({ text: wait === null ? "?" : `${wait}m`, color: "#17324d", fontWeight: "700", fontSize: "11px" }); }); }
+  function waitFor(ride) { const liveData = liveDataFor(ride); return liveData?.isOpen ? liveData.wait : null; }
+  function isClosed(ride) { return liveDataFor(ride)?.isOpen === false; }
+  function updateMarkers() { rideMarkers.forEach(({ ride, marker }) => { const wait = waitFor(ride); marker.setLabel({ text: isClosed(ride) ? "×" : wait === null ? "?" : `${wait}m`, color: "#17324d", fontWeight: "700", fontSize: "11px" }); }); }
   function matchesFilters(ride) { return activeFilters.size === 0 || ride.categories.some(category => activeFilters.has(category)); }
   function applyFilters() {
     rideMarkers.forEach(({ ride, marker }) => marker.setVisible(matchesFilters(ride)));
@@ -117,7 +120,8 @@
   function showRideInfo(ride, marker) {
     const wait = waitFor(ride);
     const distance = userPosition ? haversineMeters(userPosition, ride) : null;
-    infoWindow.setContent(`<div style="padding:.35rem .2rem;font-family:Karla,Arial,sans-serif;min-width:180px"><strong style="font-size:1rem">${escapeHtml(ride.name)}</strong><p style="margin:.45rem 0">${wait === null ? "Wait unavailable" : `Current wait: <b>${wait} min</b>`}</p>${distance === null ? "" : `<p style="margin:0">About ${formatDistance(distance)} away</p>`}<a style="display:inline-block;margin-top:.7rem;color:#174577;font-weight:700" href="/page/${encodeURIComponent(ride.pageId)}">View reviews</a></div>`);
+    const waitText = isClosed(ride) ? "<b>Currently closed</b>" : wait === null ? "Wait unavailable" : `Current wait: <b>${wait} min</b>`;
+    infoWindow.setContent(`<div style="padding:.35rem .2rem;font-family:Karla,Arial,sans-serif;min-width:180px"><strong style="font-size:1rem">${escapeHtml(ride.name)}</strong><p style="margin:.45rem 0">${waitText}</p>${distance === null ? "" : `<p style="margin:0">About ${formatDistance(distance)} away</p>`}<a style="display:inline-block;margin-top:.7rem;color:#174577;font-weight:700" href="/page/${encodeURIComponent(ride.pageId)}">View reviews</a></div>`);
     infoWindow.open({ map, anchor: marker });
   }
 
