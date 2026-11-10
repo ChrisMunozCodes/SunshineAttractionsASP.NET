@@ -13,15 +13,25 @@ public sealed class HomeController(MongoContext database, CatalogueService catal
     public IActionResult Index() => View();
 
     [HttpGet("disney-selection-homepage")]
-    public IActionResult DisneySelectionHomepage() => View();
+    public IActionResult DisneySelectionHomepage() => View(catalogue.Parks);
 
     [HttpGet("disney-selection-magickingdom")]
-    public async Task<IActionResult> DisneySelectionMagicKingdom(CancellationToken cancellationToken)
+    public Task<IActionResult> DisneySelectionMagicKingdom(CancellationToken cancellationToken) => ParkSelection("magic-kingdom", cancellationToken);
+
+    [HttpGet("disney-selection/{parkId}")]
+    public async Task<IActionResult> ParkSelection(string parkId, CancellationToken cancellationToken)
     {
+        var park = catalogue.FindPark(parkId);
+        if (park is null) return NotFound();
+
         var averages = (await database.Reviews.Find(Builders<Review>.Filter.Empty).ToListAsync(cancellationToken))
             .GroupBy(review => review.Page).ToDictionary(group => group.Key, group => group.Average(review => review.Rating));
-        ViewData["Averages"] = averages;
-        return View(catalogue.Attractions);
+        return View("DisneySelectionMagicKingdom", new ParkSelectionViewModel
+        {
+            Park = park,
+            Attractions = catalogue.ForPark(park.Id),
+            Averages = averages
+        });
     }
 
     [HttpGet("page/{id}")]

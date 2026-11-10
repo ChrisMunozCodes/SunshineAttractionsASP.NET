@@ -64,15 +64,26 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapGet("/wait-times", async (IHttpClientFactory clients, CancellationToken cancellationToken) =>
+var queueTimesParkIds = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
 {
-    using var request = new HttpRequestMessage(HttpMethod.Get, "https://queue-times.com/parks/6/queue_times.json");
+    ["magic-kingdom"] = 6,
+    ["epcot"] = 5,
+    ["hollywood-studios"] = 7,
+    ["animal-kingdom"] = 8
+};
+
+app.MapGet("/wait-times/{parkId}", async (string parkId, IHttpClientFactory clients, CancellationToken cancellationToken) =>
+{
+    if (!queueTimesParkIds.TryGetValue(parkId, out var parkIdNumber)) return Results.NotFound();
+
+    using var request = new HttpRequestMessage(HttpMethod.Get, $"https://queue-times.com/parks/{parkIdNumber}/queue_times.json");
     request.Headers.UserAgent.ParseAdd("SunshineAttractions/1.0 (+https://sunshineattractionsasp-net.onrender.com)");
     using var response = await clients.CreateClient().SendAsync(request, cancellationToken);
     return response.IsSuccessStatusCode
         ? Results.Content(await response.Content.ReadAsStringAsync(cancellationToken), "application/json")
         : Results.Problem("Unable to fetch wait times.", statusCode: 502);
 });
+app.MapGet("/wait-times", () => Results.Redirect("/wait-times/magic-kingdom"));
 
 app.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
 app.Run();

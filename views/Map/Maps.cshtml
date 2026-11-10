@@ -1,3 +1,26 @@
-@{ ViewData["Title"] = "Maps"; }
-<main class="flex justify-center p-10"><section class="card bg-gray-100 shadow-xl w-full max-w-lg"><div class="card-body"><h1 class="text-3xl">Park maps</h1><p>Find attractions and compare nearby wait times.</p><form onsubmit="goToMap(event)" class="grid gap-3"><select id="locationSelect" class="select select-bordered"><option value="">Choose a park</option><option value="/map/magickingdom-maps">Magic Kingdom</option></select><button class="btn bg-primaryButton text-black">Open map</button></form></div></section></main>
-@section Scripts { <script>function goToMap(e){e.preventDefault();const v=document.getElementById('locationSelect').value;if(v)location.href=v}</script> }
+@model IReadOnlyList<ParkGuide>
+@{ ViewData["Title"] = "Choose a park map"; }
+<main class="map-hub">
+  <section class="map-hub-hero">
+    <p class="map-hub-kicker">WALT DISNEY WORLD &middot; LIVE PLANNERS</p>
+    <h1>Pick a park.<br /><em>Plan a better day.</em></h1>
+    <p class="map-hub-intro">Live waits, ride filters, and recommendations that balance the line with the walk ahead.</p>
+    <div class="map-hub-legend"><span><i></i>Live wait times</span><span><i></i>Location-aware picks</span><span><i></i>Four parks</span></div>
+  </section>
+
+  <section class="map-hub-grid" aria-label="Choose a Disney park map">
+  @foreach (var park in Model)
+  {
+    var initials = park.Id switch { "magic-kingdom" => "MK", "hollywood-studios" => "HS", "animal-kingdom" => "AK", _ => "EP" };
+    <a class="map-hub-card map-hub-card--@park.Id" href="@park.MapRoute">
+      <span class="map-hub-card-art" aria-hidden="true">@initials</span>
+      <span class="map-hub-card-content"><small>@park.Tagline</small><strong>@park.Name</strong><em>@(park.Id == "magic-kingdom" ? "Full location-aware planner" : "Full location-aware planner")</em><b>Open planner <span aria-hidden="true">&rarr;</span></b></span>
+    </a>
+  }
+  </section>
+  <p class="map-hub-source">Live waits are supplied by <a href="https://queue-times.com/" target="_blank" rel="noopener">Queue-Times.com</a> and can change throughout the day.</p>
+</main>
+
+<style>
+  .map-hub{max-width:1240px;margin:0 auto;padding:2.25rem 1.25rem 4rem;color:#172033}.map-hub-hero{position:relative;overflow:hidden;padding:clamp(2rem,5vw,4.3rem);border-radius:1.4rem;background:linear-gradient(120deg,#102a43,#225d90 63%,#f5bd61);box-shadow:0 18px 42px rgba(16,42,67,.2);color:#fff}.map-hub-hero::after{position:absolute;right:-3.5rem;bottom:-4.5rem;content:"✦";color:rgba(255,255,255,.12);font-size:19rem;line-height:1}.map-hub-kicker{margin:0;color:#f8cb75;font:800 .76rem/1 Karla,Arial,sans-serif;letter-spacing:.15em}.map-hub h1{position:relative;z-index:1;max-width:720px;margin:.8rem 0 1.1rem;font:800 clamp(2.7rem,6vw,5.2rem)/.91 Karla,Arial,sans-serif;letter-spacing:-.06em}.map-hub h1 em{color:#f8cb75;font-style:normal}.map-hub-intro{position:relative;z-index:1;max-width:565px;margin:0;color:#eef5fa;font:500 1.05rem/1.6 Karla,Arial,sans-serif}.map-hub-legend{position:relative;z-index:1;display:flex;gap:1.15rem;flex-wrap:wrap;margin-top:2rem;color:#eff5fa;font:700 .84rem Karla,Arial,sans-serif}.map-hub-legend span{display:flex;align-items:center;gap:.45rem}.map-hub-legend i{width:.52rem;height:.52rem;border-radius:50%;background:#f8cb75}.map-hub-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.15rem;margin-top:1.3rem}.map-hub-card{position:relative;isolation:isolate;display:block;min-height:300px;overflow:hidden;border-radius:1.1rem;color:#fff;text-decoration:none;box-shadow:0 10px 25px rgba(18,34,56,.12);transition:transform .2s,box-shadow .2s}.map-hub-card:hover{transform:translateY(-5px);box-shadow:0 20px 38px rgba(18,34,56,.2)}.map-hub-card--magic-kingdom{background:linear-gradient(135deg,#1b3f77,#8868ad)}.map-hub-card--epcot{background:linear-gradient(135deg,#064967,#179a9d)}.map-hub-card--hollywood-studios{background:linear-gradient(135deg,#6c234c,#ed6c54)}.map-hub-card--animal-kingdom{background:linear-gradient(135deg,#31572c,#879d4b)}.map-hub-card::after{position:absolute;z-index:-1;inset:0;content:"";background:linear-gradient(0deg,rgba(5,18,32,.72),rgba(5,18,32,.02) 76%)}.map-hub-card-art{position:absolute;top:-.17em;right:-.1em;color:rgba(255,255,255,.13);font:900 clamp(7rem,20vw,13rem)/1 Karla,Arial,sans-serif;letter-spacing:-.12em}.map-hub-card-content{position:absolute;right:0;bottom:0;left:0;display:grid;gap:.45rem;padding:1.45rem}.map-hub-card small{color:#ffe1a2;font:800 .72rem Karla,Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase}.map-hub-card strong{font:800 clamp(1.75rem,3vw,2.35rem)/1 Karla,Arial,sans-serif;letter-spacing:-.04em}.map-hub-card em{color:#f1f6fa;font:500 .9rem Karla,Arial,sans-serif;font-style:normal}.map-hub-card b{margin-top:.45rem;color:#ffe1a2;font:800 .86rem Karla,Arial,sans-serif}.map-hub-source{margin:1.15rem 0 0;color:#607083;font:500 .8rem/1.5 Karla,Arial,sans-serif}.map-hub-source a{color:#1e5a90;font-weight:800}@@media(max-width:680px){.map-hub{padding:1rem 1rem 2rem}.map-hub-hero{padding:2rem 1.5rem}.map-hub-grid{grid-template-columns:1fr}.map-hub-card{min-height:250px}.map-hub-legend{gap:.75rem}}
+</style>

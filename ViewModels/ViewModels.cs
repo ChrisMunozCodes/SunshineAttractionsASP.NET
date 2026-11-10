@@ -11,6 +11,13 @@ public sealed class PageViewModel
     public bool HasReviewed { get; init; }
     public string Filter { get; init; } = "all";
 }
+
+public sealed class ParkSelectionViewModel
+{
+    public required ParkGuide Park { get; init; }
+    public required IReadOnlyList<Attraction> Attractions { get; init; }
+    public required IReadOnlyDictionary<string, double> Averages { get; init; }
+}
 public sealed class ReviewCard
 {
     public required Review Review { get; init; }
