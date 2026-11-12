@@ -15,6 +15,13 @@ public sealed class HomeController(MongoContext database, CatalogueService catal
     [HttpGet("disney-selection-homepage")]
     public IActionResult DisneySelectionHomepage() => View(catalogue.Parks);
 
+    [HttpGet("plan")]
+    public IActionResult Plan() => View(new DayPlanViewModel
+    {
+        Parks = catalogue.Parks,
+        Rides = catalogue.Attractions.Where(attraction => attraction.Category == "Rides").ToList()
+    });
+
     [HttpGet("disney-selection-magickingdom")]
     public Task<IActionResult> DisneySelectionMagicKingdom(CancellationToken cancellationToken) => ParkSelection("magic-kingdom", cancellationToken);
 

@@ -46,6 +46,10 @@
     })[pageId] || []
   }));
 
+  let dayPlan;
+  try { dayPlan = JSON.parse(localStorage.getItem("sunshine-my-day:magic-kingdom") || "null"); } catch (_) { dayPlan = null; }
+  const plannedRideIds = new Set((dayPlan?.rides || []).filter(ride => !ride.done).map(ride => ride.id));
+
   let map, infoWindow, userMarker, userPosition;
   let liveWaits = new Map();
   let rideMarkers = [];
@@ -146,7 +150,8 @@
   }
 
   function recommendRides() {
-    const candidates = rideMarkers.filter(({ ride }) => matchesFilters(ride)).map(({ ride }) => { const wait = waitFor(ride); return wait === null ? null : { ...ride, wait, distance: haversineMeters(userPosition, ride) }; }).filter(Boolean);
+    const pool = rideMarkers.filter(({ ride }) => matchesFilters(ride) && (plannedRideIds.size === 0 || plannedRideIds.has(ride.pageId)));
+    const candidates = pool.map(({ ride }) => { const wait = waitFor(ride); return wait === null ? null : { ...ride, wait, distance: haversineMeters(userPosition, ride) }; }).filter(Boolean);
     if (!candidates.length) {
       const list = document.getElementById("recommendation-list");
       const empty = document.getElementById("recommendation-empty");
@@ -178,6 +183,8 @@
   function formatDistance(meters) { return meters < 1000 ? `${Math.round(meters)} m` : `${(meters / 1000).toFixed(1)} km`; }
   function escapeHtml(value) { const element = document.createElement("div"); element.textContent = value; return element.innerHTML; }
   document.addEventListener("DOMContentLoaded", () => {
+    const summary = document.getElementById("my-day-summary");
+    if (plannedRideIds.size && summary) { summary.hidden = false; document.getElementById("my-day-count").textContent = `${plannedRideIds.size} saved ride${plannedRideIds.size === 1 ? "" : "s"} are guiding your recommendations.`; }
     document.getElementById("share-location")?.addEventListener("click", requestLocation);
     document.getElementById("refresh-waits")?.addEventListener("click", loadWaitTimes);
     document.querySelectorAll(".mk-filter input").forEach(input => input.addEventListener("change", event => {

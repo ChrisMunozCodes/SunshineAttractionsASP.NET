@@ -34,6 +34,10 @@
     ]
   };
   const rides = (rideData[config.parkId] || []).map(([name, pageId, lat, lng, categories]) => ({ name, pageId, lat, lng, categories }));
+  const planKey = `sunshine-my-day:${config.parkId}`;
+  let dayPlan;
+  try { dayPlan = JSON.parse(localStorage.getItem(planKey) || "null"); } catch (_) { dayPlan = null; }
+  const plannedRideIds = new Set((dayPlan?.rides || []).filter(ride => !ride.done).map(ride => ride.id));
   const normalize = value => String(value || "").toLowerCase().replace(/[^a-z0-9]/g, "");
   const aliases = { soarinacrossamerica: "soarinaroundtheworld", expeditioneverestlegendoftheforbiddenmountain: "expeditioneverest" };
   const activeFilters = new Set();
@@ -94,7 +98,8 @@
   }
 
   function recommend() {
-    const candidates = markers.filter(({ ride }) => matchesFilters(ride)).map(({ ride }) => { const wait = waitFor(ride); return wait === null ? null : { ...ride, wait, distance: distance(userPosition, ride) }; }).filter(Boolean);
+    const pool = markers.filter(({ ride }) => matchesFilters(ride) && (plannedRideIds.size === 0 || plannedRideIds.has(ride.pageId)));
+    const candidates = pool.map(({ ride }) => { const wait = waitFor(ride); return wait === null ? null : { ...ride, wait, distance: distance(userPosition, ride) }; }).filter(Boolean);
     const list = document.getElementById("recommendation-list"), empty = document.getElementById("recommendation-empty");
     if (!candidates.length) { list.hidden = true; empty.hidden = false; empty.textContent = activeFilters.size ? "No matching rides have live wait times right now. Try another filter or refresh." : "Location found, but live wait data is unavailable. Refresh waits and try again."; return; }
     const maxWait = Math.max(...candidates.map(ride => ride.wait), 1), maxDistance = Math.max(...candidates.map(ride => ride.distance), 1);
@@ -107,5 +112,5 @@
   function distance(a, b) { const radians = degrees => degrees * Math.PI / 180, dLat = radians(b.lat - a.lat), dLng = radians(b.lng - a.lng); return 2 * 6371000 * Math.asin(Math.sqrt(Math.sin(dLat / 2) ** 2 + Math.cos(radians(a.lat)) * Math.cos(radians(b.lat)) * Math.sin(dLng / 2) ** 2)); }
   function formatDistance(meters) { return meters < 1000 ? `${Math.round(meters)} m` : `${(meters / 1000).toFixed(1)} km`; }
   function escapeHtml(value) { const element = document.createElement("div"); element.textContent = value; return element.innerHTML; }
-  document.addEventListener("DOMContentLoaded", () => { document.getElementById("share-location")?.addEventListener("click", shareLocation); document.getElementById("refresh-waits")?.addEventListener("click", loadWaits); document.querySelectorAll(".planner-filter input").forEach(input => input.addEventListener("change", event => { const filter = event.currentTarget.value; event.currentTarget.checked ? activeFilters.add(filter) : activeFilters.delete(filter); applyFilters(); })); document.getElementById("clear-filters")?.addEventListener("click", () => { activeFilters.clear(); document.querySelectorAll(".planner-filter input").forEach(input => input.checked = false); applyFilters(); }); loadWaits(); });
+  document.addEventListener("DOMContentLoaded", () => { const summary = document.getElementById("my-day-summary"); if (plannedRideIds.size && summary) { summary.hidden = false; document.getElementById("my-day-count").textContent = `${plannedRideIds.size} saved ride${plannedRideIds.size === 1 ? "" : "s"} are guiding your recommendations.`; document.getElementById("edit-my-day").href = `/plan?park=${encodeURIComponent(config.parkId)}`; } document.getElementById("share-location")?.addEventListener("click", shareLocation); document.getElementById("refresh-waits")?.addEventListener("click", loadWaits); document.querySelectorAll(".planner-filter input").forEach(input => input.addEventListener("change", event => { const filter = event.currentTarget.value; event.currentTarget.checked ? activeFilters.add(filter) : activeFilters.delete(filter); applyFilters(); })); document.getElementById("clear-filters")?.addEventListener("click", () => { activeFilters.clear(); document.querySelectorAll(".planner-filter input").forEach(input => input.checked = false); applyFilters(); }); loadWaits(); });
 })();

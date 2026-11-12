@@ -18,6 +18,12 @@ public sealed class ParkSelectionViewModel
     public required IReadOnlyList<Attraction> Attractions { get; init; }
     public required IReadOnlyDictionary<string, double> Averages { get; init; }
 }
+
+public sealed class DayPlanViewModel
+{
+    public required IReadOnlyList<ParkGuide> Parks { get; init; }
+    public required IReadOnlyList<Attraction> Rides { get; init; }
+}
 public sealed class ReviewCard
 {
     public required Review Review { get; init; }
