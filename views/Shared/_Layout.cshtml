@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>@ViewData["Title"] - Sunshine Attractions</title>
   <link rel="icon" type="image/png" href="/imgs/favicon-32x32.png" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="/assets/image/Sunshine%20Attractions-logo/sunshine-logo-transparent.png" />
+  <meta name="theme-color" content="#173f67" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Karla:wght@500&family=Merriweather&display=swap" rel="stylesheet" />
@@ -16,6 +21,29 @@
   <partial name="_Header" />
   @if (TempData["Error"] is string error) { <div class="app-alert">@error</div> }
   @RenderBody()
+  <aside id="install-app-banner" class="install-app-banner" hidden aria-label="Install Sunshine Attractions">
+    <span class="install-app-icon" aria-hidden="true">☀</span><div><strong id="install-app-title">Add Sunshine Attractions to your phone</strong><span id="install-app-copy">Open your planner from your Home Screen.</span></div><button id="install-app-button" type="button">Install</button><button id="dismiss-install-app" type="button" aria-label="Dismiss install prompt">×</button>
+  </aside>
   @await RenderSectionAsync("Scripts", required: false)
+  <script>
+    (() => {
+      if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("/service-worker.js").catch(() => {}));
+      const banner = document.getElementById("install-app-banner"), install = document.getElementById("install-app-button"), dismiss = document.getElementById("dismiss-install-app"), title = document.getElementById("install-app-title"), copy = document.getElementById("install-app-copy");
+      const relevantPage = location.pathname === "/plan" || location.pathname.startsWith("/map");
+      const standalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+      const dismissed = sessionStorage.getItem("sunshine-install-dismissed") === "true";
+      let installPrompt;
+      const show = () => { if (relevantPage && !standalone && !dismissed) banner.hidden = false; };
+      window.addEventListener("beforeinstallprompt", event => { event.preventDefault(); installPrompt = event; show(); });
+      window.addEventListener("appinstalled", () => { banner.hidden = true; installPrompt = null; });
+      const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+      if (ios) { title.textContent = "Add Sunshine Attractions to your Home Screen"; copy.textContent = "In Safari, tap Share, then Add to Home Screen."; install.hidden = true; setTimeout(show, 700); }
+      install.addEventListener("click", async () => { if (!installPrompt) return; installPrompt.prompt(); await installPrompt.userChoice; installPrompt = null; banner.hidden = true; });
+      dismiss.addEventListener("click", () => { sessionStorage.setItem("sunshine-install-dismissed", "true"); banner.hidden = true; });
+    })();
+  </script>
+  <style>
+    .install-app-banner{position:fixed;z-index:100;right:1rem;bottom:1rem;display:flex;align-items:center;gap:.65rem;max-width:min(27rem,calc(100vw - 2rem));padding:.75rem;border:1px solid #d9e2ec;border-radius:.85rem;background:#fff;color:#172033;box-shadow:0 14px 32px rgba(18,34,56,.2);font-family:Karla,Arial,sans-serif}.install-app-banner[hidden]{display:none}.install-app-icon{display:grid;width:2.15rem;height:2.15rem;place-items:center;border-radius:.6rem;background:#f9ce79;font-size:1.25rem}.install-app-banner div{display:grid;gap:.16rem;flex:1}.install-app-banner strong{font-size:.83rem}.install-app-banner span{color:#607083;font-size:.73rem;line-height:1.3}.install-app-banner button{border:0;border-radius:.5rem;padding:.5rem .65rem;background:#173f67;color:#fff;font:800 .75rem Karla,Arial,sans-serif;cursor:pointer}.install-app-banner #dismiss-install-app{padding:.25rem .45rem;background:transparent;color:#607083;font-size:1.25rem;line-height:1}@@media(max-width:520px){.install-app-banner{right:.7rem;bottom:.7rem;left:.7rem;max-width:none}}
+  </style>
 </body>
 </html>
