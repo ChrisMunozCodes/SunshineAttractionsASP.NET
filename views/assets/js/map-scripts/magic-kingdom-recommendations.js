@@ -49,6 +49,7 @@
   let dayPlan;
   try { dayPlan = JSON.parse(localStorage.getItem("sunshine-my-day:magic-kingdom") || "null"); } catch (_) { dayPlan = null; }
   const plannedRideIds = new Set((dayPlan?.rides || []).filter(ride => !ride.done).map(ride => ride.id));
+  const completedRideIds = new Set((dayPlan?.rides || []).filter(ride => ride.done).map(ride => ride.id));
 
   let map, infoWindow, userMarker, userPosition;
   let liveWaits = new Map();
@@ -125,7 +126,7 @@
     const wait = waitFor(ride);
     const distance = userPosition ? haversineMeters(userPosition, ride) : null;
     const waitText = isClosed(ride) ? "<b>Currently closed</b>" : wait === null ? "Wait unavailable" : `Current wait: <b>${wait} min</b>`;
-    infoWindow.setContent(`<div style="padding:.35rem .2rem;font-family:Karla,Arial,sans-serif;min-width:180px"><strong style="font-size:1rem">${escapeHtml(ride.name)}</strong><p style="margin:.45rem 0">${waitText}</p>${distance === null ? "" : `<p style="margin:0">About ${formatDistance(distance)} away</p>`}<a style="display:inline-block;margin-top:.7rem;color:#174577;font-weight:700" href="/page/${encodeURIComponent(ride.pageId)}">View reviews</a></div>`);
+    infoWindow.setContent(`<div style="padding:.35rem .2rem;font-family:Karla,Arial,sans-serif;min-width:180px"><strong style="font-size:1rem">${escapeHtml(ride.name)}</strong><p style="margin:.45rem 0">${waitText}</p>${distance === null ? "" : `<p style="margin:0">About ${formatDistance(distance)} away</p>`}<a style="display:inline-block;margin-top:.7rem;color:#174577;font-weight:700" href="${navigationUrl(ride)}" target="_blank" rel="noopener">Open walking directions</a></div>`);
     infoWindow.open({ map, anchor: marker });
   }
 
@@ -150,7 +151,7 @@
   }
 
   function recommendRides() {
-    const pool = rideMarkers.filter(({ ride }) => matchesFilters(ride) && (plannedRideIds.size === 0 || plannedRideIds.has(ride.pageId)));
+    const pool = rideMarkers.filter(({ ride }) => !completedRideIds.has(ride.pageId) && matchesFilters(ride) && (plannedRideIds.size === 0 || plannedRideIds.has(ride.pageId)));
     const candidates = pool.map(({ ride }) => { const wait = waitFor(ride); return wait === null ? null : { ...ride, wait, distance: haversineMeters(userPosition, ride) }; }).filter(Boolean);
     if (!candidates.length) {
       const list = document.getElementById("recommendation-list");
@@ -173,18 +174,21 @@
     list.replaceChildren(...recommendations.map((ride, index) => {
       const item = document.createElement("li");
       item.className = "mk-rec";
-      item.innerHTML = `<span class="mk-rank">${index + 1}</span><div><a href="/page/${encodeURIComponent(ride.pageId)}">${escapeHtml(ride.name)}</a><div class="mk-metrics"><span class="mk-metric">${ride.wait} min wait</span><span class="mk-metric">${formatDistance(ride.distance)} away</span></div></div>`;
-      item.addEventListener("click", event => { if (event.target.closest("a")) return; const match = rideMarkers.find(entry => entry.ride.name === ride.name); if (match) { map.panTo(match.marker.getPosition()); map.setZoom(18); showRideInfo(match.ride, match.marker); } });
+      item.innerHTML = `<span class="mk-rank">${index + 1}</span><div><a href="/page/${encodeURIComponent(ride.pageId)}">${escapeHtml(ride.name)}</a><div class="mk-metrics"><span class="mk-metric">${ride.wait} min wait</span><span class="mk-metric">${formatDistance(ride.distance)} away</span></div><div class="mk-rec-actions"><a class="mk-navigate" href="${navigationUrl(ride)}" target="_blank" rel="noopener">Navigate</a><button type="button" class="mk-done">Mark done</button></div></div>`;
+      item.querySelector(".mk-done").addEventListener("click", event => { event.stopPropagation(); markDone(ride); });
+      item.addEventListener("click", event => { if (event.target.closest("a") || event.target.closest("button")) return; const match = rideMarkers.find(entry => entry.ride.name === ride.name); if (match) { map.panTo(match.marker.getPosition()); map.setZoom(18); showRideInfo(match.ride, match.marker); } });
       return item;
     }));
   }
 
   function haversineMeters(a, b) { const rad = degrees => degrees * Math.PI / 180; const dLat = rad(b.lat - a.lat); const dLng = rad(b.lng - a.lng); const value = Math.sin(dLat / 2) ** 2 + Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.sin(dLng / 2) ** 2; return 2 * 6371000 * Math.asin(Math.sqrt(value)); }
   function formatDistance(meters) { return meters < 1000 ? `${Math.round(meters)} m` : `${(meters / 1000).toFixed(1)} km`; }
+  function navigationUrl(ride) { return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${ride.lat},${ride.lng}`)}&travelmode=walking`; }
+  function markDone(ride) { if (!dayPlan) dayPlan = { parkId: "magic-kingdom", createdAt: new Date().toISOString(), rides: [] }; let savedRide = dayPlan.rides.find(item => item.id === ride.pageId); if (!savedRide) { savedRide = { id: ride.pageId, name: ride.name, done: false }; dayPlan.rides.push(savedRide); } savedRide.done = true; plannedRideIds.delete(ride.pageId); completedRideIds.add(ride.pageId); localStorage.setItem("sunshine-my-day:magic-kingdom", JSON.stringify(dayPlan)); renderDayPlanSummary(); recommendRides(); setStatus(`${ride.name} marked complete. Great job!`, "success"); }
+  function renderDayPlanSummary() { const summary = document.getElementById("my-day-summary"); if (!summary) return; const completed = completedRideIds.size, remaining = plannedRideIds.size; if (!dayPlan?.rides?.length) { summary.hidden = true; return; } summary.hidden = false; document.getElementById("my-day-count").textContent = `${remaining} ride${remaining === 1 ? "" : "s"} remaining${completed ? ` · ${completed} done` : ""}.`; }
   function escapeHtml(value) { const element = document.createElement("div"); element.textContent = value; return element.innerHTML; }
   document.addEventListener("DOMContentLoaded", () => {
-    const summary = document.getElementById("my-day-summary");
-    if (plannedRideIds.size && summary) { summary.hidden = false; document.getElementById("my-day-count").textContent = `${plannedRideIds.size} saved ride${plannedRideIds.size === 1 ? "" : "s"} are guiding your recommendations.`; }
+    renderDayPlanSummary();
     document.getElementById("share-location")?.addEventListener("click", requestLocation);
     document.getElementById("refresh-waits")?.addEventListener("click", loadWaitTimes);
     document.querySelectorAll(".mk-filter input").forEach(input => input.addEventListener("change", event => {
