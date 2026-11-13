@@ -21,10 +21,12 @@ public sealed class MongoContext
         Reviews = database.GetCollection<Review>("reviews");
         Comments = database.GetCollection<Comment>("comments");
         Markers = database.GetCollection<Marker>("markers");
+        ParkCircles = database.GetCollection<ParkCircle>("parkCircles");
     }
 
     public IMongoCollection<User> Users { get; }
     public IMongoCollection<Review> Reviews { get; }
     public IMongoCollection<Comment> Comments { get; }
     public IMongoCollection<Marker> Markers { get; }
+    public IMongoCollection<ParkCircle> ParkCircles { get; }
 }

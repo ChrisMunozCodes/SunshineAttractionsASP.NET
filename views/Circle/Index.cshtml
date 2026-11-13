@@ -1,0 +1,30 @@
+@model IReadOnlyList<ParkGuide>
+@{ ViewData["Title"] = "Park Circle"; }
+
+<main class="circle-start">
+  <section class="circle-start-hero">
+    <p class="circle-kicker">PARK CIRCLE</p>
+    <h1>Keep your park day together.</h1>
+    <p>Create a private room for your group. Share the plan, and—only if each person chooses—see fresh location pins while this page is open.</p>
+  </section>
+  <section class="circle-start-grid">
+    <form class="circle-create" action="/circle/create" method="post">
+      <p class="circle-kicker">START A CIRCLE</p>
+      <h2>Who is exploring today?</h2>
+      <label>Circle name<input name="Name" required minlength="2" maxlength="40" placeholder="The Martinez park day" /></label>
+      <label>Park<select name="ParkId" required>@foreach (var park in Model) { <option value="@park.Id">@park.Name</option> }</select></label>
+      <button type="submit">Create private Circle</button>
+      <p class="circle-form-note">Everyone signs in with their own Sunshine account. Invite links expire with the Circle.</p>
+    </form>
+    <aside class="circle-privacy">
+      <p class="circle-kicker">YOUR PRIVACY</p>
+      <h2>Clear by design.</h2>
+      <ul><li>Location is off until each member turns it on.</li><li>Only the latest location is kept—no route or location history.</li><li>Sharing works while the Circle page is open; it is not background tracking.</li><li>Every Circle expires automatically after 12 hours.</li></ul>
+      <p>For children, use only with a parent or guardian managing the device and sharing settings.</p>
+    </aside>
+  </section>
+</main>
+
+<style>
+  .circle-start{max-width:1100px;margin:0 auto;padding:3rem 1.25rem 4rem;color:#172033;font-family:Karla,Arial,sans-serif}.circle-start-hero{padding:clamp(1.5rem,5vw,3.5rem);border-radius:1.35rem;background:radial-gradient(circle at 92% 5%,#f8cc75,transparent 22rem),linear-gradient(125deg,#102a43,#1d5b90);color:#fff}.circle-kicker{margin:0;color:#f3b94f;font:800 .72rem/1 Karla,sans-serif;letter-spacing:.15em}.circle-start-hero h1{max-width:42rem;margin:.65rem 0;font:800 clamp(2.3rem,6vw,4.5rem)/.96 Karla,sans-serif;letter-spacing:-.06em}.circle-start-hero p:last-child{max-width:42rem;margin:0;color:#e9f4fb;font-size:1.04rem;line-height:1.55}.circle-start-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.85fr);gap:1.25rem;margin-top:1.25rem}.circle-create,.circle-privacy{border:1px solid #dbe5ed;border-radius:1rem;background:#fff;padding:1.45rem;box-shadow:0 10px 25px rgba(19,48,75,.08)}.circle-create h2,.circle-privacy h2{margin:.45rem 0 1.15rem;font:800 1.55rem Karla,sans-serif}.circle-create label{display:grid;gap:.4rem;margin:.85rem 0;color:#334d64;font:800 .78rem Karla,sans-serif}.circle-create input,.circle-create select{width:100%;box-sizing:border-box;border:1px solid #cbd8e3;border-radius:.55rem;background:#fff;padding:.75rem;color:#172033;font:500 1rem Karla,sans-serif}.circle-create button{width:100%;border:0;border-radius:.65rem;background:#1d5b90;padding:.85rem;color:#fff;font:800 .9rem Karla,sans-serif;cursor:pointer}.circle-form-note,.circle-privacy p{margin:1rem 0 0;color:#66778a;font:.78rem/1.45 Karla,sans-serif}.circle-privacy{background:#fff9ed}.circle-privacy ul{display:grid;gap:.75rem;margin:1rem 0 0;padding:0;list-style:none}.circle-privacy li{position:relative;padding-left:1.3rem;color:#4e5c6e;font:.88rem/1.45 Karla,sans-serif}.circle-privacy li:before{position:absolute;left:0;color:#1d5b90;content:"✓"}@@media(max-width:720px){.circle-start{padding-top:1.5rem}.circle-start-grid{grid-template-columns:1fr}}
+</style>

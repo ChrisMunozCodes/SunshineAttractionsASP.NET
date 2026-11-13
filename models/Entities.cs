@@ -51,3 +51,26 @@ public sealed class Marker
     [BsonElement("park")] public string Park { get; set; } = "";
     [BsonElement("wait")] public string? Wait { get; set; }
 }
+
+public sealed class ParkCircle
+{
+    [BsonId] public ObjectId Id { get; set; }
+    [BsonElement("owner")] public ObjectId OwnerId { get; set; }
+    [BsonElement("name")] public string Name { get; set; } = "Our park day";
+    [BsonElement("park")] public string ParkId { get; set; } = "";
+    [BsonElement("inviteCode")] public string InviteCode { get; set; } = "";
+    [BsonElement("createdAt")] public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    [BsonElement("expiresAt")] public DateTime ExpiresAt { get; set; }
+    [BsonElement("members")] public List<ParkCircleMember> Members { get; set; } = [];
+}
+
+public sealed class ParkCircleMember
+{
+    [BsonElement("user")] public ObjectId UserId { get; set; }
+    [BsonElement("name")] public string DisplayName { get; set; } = "";
+    [BsonElement("joinedAt")] public DateTime JoinedAt { get; set; } = DateTime.UtcNow;
+    [BsonElement("sharing")] public bool IsSharingLocation { get; set; }
+    [BsonElement("latitude")] public double? Latitude { get; set; }
+    [BsonElement("longitude")] public double? Longitude { get; set; }
+    [BsonElement("locationUpdatedAt")] public DateTime? LocationUpdatedAt { get; set; }
+}

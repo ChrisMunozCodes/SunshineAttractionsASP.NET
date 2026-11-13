@@ -8,6 +8,7 @@
       <a href="/map/maps" class="site-link">MAPS</a>
       @if (loggedIn)
       {
+        <a href="/circle" class="site-link">CIRCLE</a>
         <a href="/profile" class="site-link site-user">@User.Identity!.Name</a>
         <a href="/logout" class="site-action site-action--outline">LOG OUT</a>
       }
@@ -20,7 +21,7 @@
   </nav>
   <div id="mobile-menu" class="site-mobile-menu">
     <a href="/">EXPLORE</a><a href="/map/maps">MAPS</a>
-    @if (loggedIn) { <a href="/profile">PROFILE</a><a href="/logout">LOG OUT</a> }
+    @if (loggedIn) { <a href="/circle">CIRCLE</a><a href="/profile">PROFILE</a><a href="/logout">LOG OUT</a> }
     else { <a href="/login">LOG IN</a><a href="/signup">CREATE ACCOUNT</a> }
   </div>
 </header>
