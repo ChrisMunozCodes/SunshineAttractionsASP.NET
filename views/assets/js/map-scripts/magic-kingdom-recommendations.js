@@ -56,6 +56,8 @@
   let rideMarkers = [];
   const activeFilters = new Set();
   const config = window.magicKingdomMapConfig || { markers: [] };
+  const finderPlaces = (Array.isArray(config.places) ? config.places : []).map(place => ({ name: place.name ?? place.Name, type: place.type ?? place.Type, description: place.description ?? place.Description, latitude: place.latitude ?? place.Latitude, longitude: place.longitude ?? place.Longitude, navigationQuery: place.navigationQuery ?? place.NavigationQuery }));
+  let finderFilter = "all";
   const normalize = value => String(value || "").toLowerCase().replace(/[^a-z0-9]/g, "");
   const status = () => document.getElementById("planner-status");
   const setStatus = (message, state = "") => { const node = status(); if (node) { node.textContent = message; node.dataset.state = state; } };
@@ -143,7 +145,7 @@
       const locationState = document.getElementById("location-state");
       locationState.textContent = "Location on"; locationState.dataset.active = "true";
       button.textContent = "Update my location"; button.disabled = false;
-      recommendRides();
+      recommendRides(); renderFinder();
     }, error => {
       setStatus(error.code === error.PERMISSION_DENIED ? "Location access was denied. Allow it in your browser settings to get nearby recommendations." : "We could not determine your location. Try again while you are at the park.", "error");
       button.disabled = false;
@@ -186,9 +188,15 @@
   function navigationUrl(ride) { return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${ride.lat},${ride.lng}`)}&travelmode=walking`; }
   function markDone(ride) { if (!dayPlan) dayPlan = { parkId: "magic-kingdom", createdAt: new Date().toISOString(), rides: [] }; let savedRide = dayPlan.rides.find(item => item.id === ride.pageId); if (!savedRide) { savedRide = { id: ride.pageId, name: ride.name, done: false }; dayPlan.rides.push(savedRide); } savedRide.done = true; plannedRideIds.delete(ride.pageId); completedRideIds.add(ride.pageId); localStorage.setItem("sunshine-my-day:magic-kingdom", JSON.stringify(dayPlan)); renderDayPlanSummary(); recommendRides(); setStatus(`${ride.name} marked complete. Great job!`, "success"); }
   function renderDayPlanSummary() { const summary = document.getElementById("my-day-summary"); if (!summary) return; const completed = completedRideIds.size, remaining = plannedRideIds.size; if (!dayPlan?.rides?.length) { summary.hidden = true; return; } summary.hidden = false; document.getElementById("my-day-count").textContent = `${remaining} ride${remaining === 1 ? "" : "s"} remaining${completed ? ` · ${completed} done` : ""}.`; }
+  function openFinder() { document.getElementById("mk-finder").hidden = false; renderFinder(); }
+  function renderFinder() { const finder = document.getElementById("mk-finder"); if (!finder || finder.hidden) return; const list = document.getElementById("mk-finder-list"), empty = document.getElementById("mk-finder-empty"), label = document.getElementById("mk-finder-location"); label.textContent = userPosition ? "Closest locations are shown first using your current position." : "Use your location to put the closest spots first."; const matches = finderPlaces.filter(place => finderFilter === "all" || place.type === finderFilter).map(place => ({ ...place, distance: userPosition ? haversineMeters(userPosition, { lat: place.latitude, lng: place.longitude }) : null })).sort((a, b) => a.distance === null || b.distance === null ? 0 : a.distance - b.distance); if (!matches.length) { list.replaceChildren(); empty.hidden = false; empty.textContent = "No locations match that filter."; return; } empty.hidden = true; list.replaceChildren(...matches.map(place => { const item = document.createElement("li"), icon = ({ food: "🍽️", restroom: "🚻", "first-aid": "✚", locker: "🔒" })[place.type] || "📍", destination = place.navigationQuery || `${place.latitude},${place.longitude}`; item.className = "mk-finder-card"; item.innerHTML = `<span>${icon}</span><div><h3>${escapeHtml(place.name)}</h3><p>${escapeHtml(place.description)}</p>${place.distance === null ? "" : `<em>${formatDistance(place.distance)} away</em>`}</div><a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}&travelmode=walking" target="_blank" rel="noopener">Directions</a>`; return item; })); }
   function escapeHtml(value) { const element = document.createElement("div"); element.textContent = value; return element.innerHTML; }
   document.addEventListener("DOMContentLoaded", () => {
     renderDayPlanSummary();
+    document.getElementById("open-mk-finder")?.addEventListener("click", openFinder);
+    document.getElementById("close-mk-finder")?.addEventListener("click", () => document.getElementById("mk-finder").hidden = true);
+    document.getElementById("mk-finder-location-button")?.addEventListener("click", requestLocation);
+    document.querySelectorAll("[data-mk-finder-filter]").forEach(button => button.addEventListener("click", () => { finderFilter = button.dataset.mkFinderFilter; document.querySelectorAll("[data-mk-finder-filter]").forEach(item => item.setAttribute("aria-pressed", String(item === button))); renderFinder(); }));
     document.getElementById("share-location")?.addEventListener("click", requestLocation);
     document.getElementById("refresh-waits")?.addEventListener("click", loadWaitTimes);
     document.querySelectorAll(".mk-filter input").forEach(input => input.addEventListener("change", event => {

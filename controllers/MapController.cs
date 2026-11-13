@@ -15,6 +15,7 @@ public sealed class MapController(MongoContext database, IConfiguration configur
     public async Task<IActionResult> MagicKingdomMaps(CancellationToken cancellationToken)
     {
         ViewData["MapApiUrl"] = $"https://maps.googleapis.com/maps/api/js?key={configuration["GoogleMaps:ApiKey"]}&map_ids={configuration["GoogleMaps:MapId"]}&callback=initMap";
+        ViewData["ParkPlaces"] = parkFinder.ForPark("magic-kingdom");
         try
         {
             return View(await database.Markers.Find(x => x.Park == "magic-kingdom").ToListAsync(cancellationToken));
