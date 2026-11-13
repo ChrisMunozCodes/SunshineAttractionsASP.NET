@@ -1,4 +1,4 @@
-const CACHE_NAME = "sunshine-attractions-v1";
+const CACHE_NAME = "sunshine-attractions-v2";
 const APP_SHELL = [
   "/offline.html",
   "/manifest.webmanifest",
@@ -30,11 +30,11 @@ self.addEventListener("fetch", event => {
     return;
   }
 
-  event.respondWith(caches.match(event.request).then(cached => cached || fetch(event.request).then(response => {
+  event.respondWith(fetch(event.request).then(response => {
     if (response.ok) {
       const copy = response.clone();
       caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy));
     }
     return response;
-  })));
+  }).catch(() => caches.match(event.request)));
 });

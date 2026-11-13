@@ -54,6 +54,6 @@
 
 @section Scripts {
   <script>window.parkPlannerConfig = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(new { parkId = Model.Id, parkName = Model.Name, latitude = Model.Latitude, longitude = Model.Longitude, waitEndpoint = $"/wait-times/{Model.Id}", places = parkPlaces }));</script>
-  <script src="/assets/js/map-scripts/park-planner.js"></script>
+  <script src="/assets/js/map-scripts/park-planner.js?v=park-finder-v1"></script>
   @if (!string.IsNullOrWhiteSpace(apiUrl)) { <script async src="@apiUrl"></script> }
 }

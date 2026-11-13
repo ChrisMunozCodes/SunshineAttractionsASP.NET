@@ -27,7 +27,7 @@
   @await RenderSectionAsync("Scripts", required: false)
   <script>
     (() => {
-      if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("/service-worker.js").catch(() => {}));
+      if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("/service-worker.js", { updateViaCache: "none" }).then(registration => registration.update()).catch(() => {}));
       const banner = document.getElementById("install-app-banner"), install = document.getElementById("install-app-button"), dismiss = document.getElementById("dismiss-install-app"), title = document.getElementById("install-app-title"), copy = document.getElementById("install-app-copy");
       const relevantPage = location.pathname === "/plan" || location.pathname.startsWith("/map");
       const standalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
