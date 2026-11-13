@@ -45,7 +45,17 @@
     ]
   };
   const rides = (rideData[config.parkId] || []).map(([name, pageId, lat, lng, categories]) => ({ name, pageId, lat, lng, categories }));
-  const places = Array.isArray(config.places) ? config.places : [];
+  const places = (Array.isArray(config.places) ? config.places : []).map(place => ({
+    id: place.id ?? place.Id,
+    name: place.name ?? place.Name,
+    type: place.type ?? place.Type,
+    description: place.description ?? place.Description,
+    tags: place.tags ?? place.Tags ?? [],
+    latitude: place.latitude ?? place.Latitude,
+    longitude: place.longitude ?? place.Longitude,
+    navigationQuery: place.navigationQuery ?? place.NavigationQuery,
+    sourceUrl: place.sourceUrl ?? place.SourceUrl
+  }));
   let finderFilter = "all";
   const planKey = `sunshine-my-day:${config.parkId}`;
   let dayPlan;
