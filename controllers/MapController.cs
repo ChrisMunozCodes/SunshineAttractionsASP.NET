@@ -6,7 +6,7 @@ using SunshineAttractions.Services;
 namespace SunshineAttractions.Controllers;
 
 [Route("map")]
-public sealed class MapController(MongoContext database, IConfiguration configuration, ILogger<MapController> logger, CatalogueService catalogue) : Controller
+public sealed class MapController(MongoContext database, IConfiguration configuration, ILogger<MapController> logger, CatalogueService catalogue, ParkFinderService parkFinder) : Controller
 {
     [HttpGet("maps")]
     public IActionResult Maps() => View(catalogue.Parks);
@@ -39,6 +39,7 @@ public sealed class MapController(MongoContext database, IConfiguration configur
         if (park is null) return NotFound();
 
         ViewData["MapApiUrl"] = $"https://maps.googleapis.com/maps/api/js?key={configuration["GoogleMaps:ApiKey"]}&map_ids={configuration["GoogleMaps:MapId"]}&callback=initParkPlannerMap";
+        ViewData["ParkPlaces"] = parkFinder.ForPark(park.Id);
         return View("ParkMap", park);
     }
 }

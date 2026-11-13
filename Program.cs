@@ -38,6 +38,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<MongoContext>();
 builder.Services.AddSingleton<CatalogueService>();
+builder.Services.AddSingleton<ParkFinderService>();
 
 var app = builder.Build();
 
