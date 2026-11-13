@@ -18,9 +18,10 @@
   <link rel="stylesheet" href="/css/app.css" />
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
   <partial name="_Header" />
   @if (TempData["Error"] is string error) { <div class="app-alert">@error</div> }
-  @RenderBody()
+  <div id="main-content" tabindex="-1">@RenderBody()</div>
   <aside id="install-app-banner" class="install-app-banner" hidden aria-label="Install Sunshine Attractions">
     <span class="install-app-icon" aria-hidden="true">☀</span><div><strong id="install-app-title">Add Sunshine Attractions to your phone</strong><span id="install-app-copy">Open your planner from your Home Screen.</span></div><button id="install-app-button" type="button">Install</button><button id="dismiss-install-app" type="button" aria-label="Dismiss install prompt">×</button>
   </aside>

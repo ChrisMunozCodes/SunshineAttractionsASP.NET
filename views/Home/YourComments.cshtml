@@ -1,3 +1,44 @@
 @model IReadOnlyList<CommentCard>
 @{ ViewData["Title"] = "Your comments"; }
-<main class="max-w-5xl mx-auto p-5"><h1 class="text-4xl mb-6">Your comments</h1>@if (!Model.Any()) { <p class="alert">You have not written any comments yet.</p> }@foreach (var card in Model) { <article class="card bg-base-100 shadow mb-5"><div class="card-body"><h2 class="card-title">Comment on @card.Comment.Page</h2><p>@card.Comment.Description</p><div class="card-actions"><a class="btn btn-sm" href="/page/@card.Comment.Page">View attraction</a><form action="/comment/deleteComment/@card.Comment.Id" method="post"><button class="btn btn-sm btn-error" onclick="return confirm('Delete this comment?')">Delete</button></form></div></div></article>}</main>
+
+<main class="library-page">
+  <section class="library-hero"><p>YOUR CONTRIBUTIONS</p><h1>Your comments</h1><span>Keep track of the conversations you have added to the park community.</span></section>
+  <nav class="library-nav" aria-label="Contribution pages"><a href="/your-reviews">Reviews</a><a class="is-current" href="/your-comments">Comments</a><a href="/profile">Profile</a></nav>
+  @if (!Model.Any())
+  {
+    <section class="library-empty"><strong>You have not left a comment yet.</strong><span>Join a conversation on an attraction page when you have something useful to share.</span><a href="/map/maps">Explore live planners</a></section>
+  }
+  else
+  {
+    <section class="library-list">
+    @foreach (var card in Model)
+    {
+      <article class="library-card"><div><p>COMMENT ON</p><h2>@card.Comment.Page.Replace("-", " ")</h2><p class="library-copy">@card.Comment.Description</p></div><div class="library-actions"><a href="/page/@card.Comment.Page">Open thread</a><form action="/comment/deleteComment/@card.Comment.Id" method="post"><button type="submit" onclick="return confirm('Delete this comment?')">Delete</button></form></div></article>
+    }
+    </section>
+  }
+</main>
+
+<style>
+  .library-page { max-width: 960px; margin: 0 auto; padding: clamp(1.25rem, 4vw, 3.5rem); font-family: Karla, Arial, sans-serif; color: #172033; }
+  .library-hero { border-radius: 1.1rem; padding: clamp(1.5rem, 5vw, 3rem); background: linear-gradient(120deg, #102d4b, #215d90); color: #fff; }
+  .library-hero p { margin: 0; color: #f6bd60; font: 800 .72rem Karla, sans-serif; letter-spacing: .14em; }
+  .library-hero h1 { margin: .5rem 0; font: 800 clamp(2.25rem, 5vw, 3.75rem)/.95 Karla, sans-serif; letter-spacing: -.055em; }
+  .library-hero span { color: #e8f1f8; font: .95rem Karla, sans-serif; }
+  .library-nav { display: flex; gap: .45rem; margin: 1rem 0; }
+  .library-nav a { border-radius: .5rem; padding: .55rem .65rem; color: #53677a; font: 800 .78rem Karla, sans-serif; text-decoration: none; }
+  .library-nav a:hover, .library-nav a.is-current { background: #e7f1f8; color: #174577; }
+  .library-list { display: grid; gap: .8rem; }
+  .library-card, .library-empty { display: flex; align-items: center; justify-content: space-between; gap: 1rem; border: 1px solid #e0e8ef; border-radius: .85rem; background: #fff; padding: 1.15rem; box-shadow: 0 6px 18px rgba(18,34,56,.05); }
+  .library-card > div:first-child { min-width: 0; }
+  .library-card > div:first-child > p:first-child { margin: 0; color: #1d5b90; font: 800 .68rem Karla, sans-serif; letter-spacing: .12em; }
+  .library-card h2 { margin: .4rem 0; color: #1e3854; font: 800 1.25rem Karla, sans-serif; text-transform: capitalize; }
+  .library-copy { margin: .65rem 0 0; color: #607286; font: .86rem/1.5 Karla, sans-serif; }
+  .library-actions { display: flex; flex: none; gap: .45rem; }
+  .library-actions a, .library-actions button, .library-empty a { border: 0; border-radius: .48rem; background: #eaf2f7; padding: .55rem .65rem; color: #174577; font: 800 .72rem Karla, sans-serif; text-decoration: none; cursor: pointer; }
+  .library-actions button { background: #fce8e8; color: #9e3131; }
+  .library-empty { display: grid; justify-items: start; color: #607286; font: .9rem/1.5 Karla, sans-serif; }
+  .library-empty strong { color: #1d3956; font-size: 1.05rem; }
+  .library-empty a { margin-top: .3rem; background: #174577; color: #fff; }
+  @@media (max-width: 560px) { .library-page { padding: 1rem; } .library-card { align-items: start; flex-direction: column; } .library-actions { width: 100%; } .library-actions > * { flex: 1; text-align: center; } }
+</style>

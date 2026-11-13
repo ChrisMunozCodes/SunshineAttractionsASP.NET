@@ -1,10 +1,92 @@
 @model PageViewModel
-@{ ViewData["Title"] = Model.Attraction.Name; var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value; }
-<main class="max-w-6xl mx-auto p-5"><section class="card bg-base-100 shadow-xl"><figure class="max-h-96"><img class="w-full object-cover" src="@Model.Attraction.Image" alt="@Model.Attraction.Name" /></figure><div class="card-body"><h1 class="text-4xl">@Model.Attraction.Name</h1><p class="text-xl">@Model.Attraction.Description</p><div>@foreach (var tag in Model.Attraction.Tags) { <span class="badge badge-secondary badge-outline mr-2">@tag</span> }</div><p class="font-bold">@(Model.AverageRating > 0 ? $"Rating: {Model.AverageRating:F1}/5" : "No ratings yet")</p></div></section>
-  @if (User.Identity?.IsAuthenticated == true && !Model.HasReviewed) { <section class="card bg-secondaryButton shadow-xl mt-6"><div class="card-body"><h2 class="text-2xl">Leave a review</h2><form action="/review/createReview" method="post" class="grid gap-3"><input type="hidden" name="pageName" value="@Model.Attraction.Id" /><select name="rating" class="select select-bordered" required><option value="">Select rating</option>@for (var star = 1; star <= 5; star++) { <option value="@star">@star star@(star == 1 ? "" : "s")</option> }</select><textarea name="desc" class="textarea textarea-bordered" maxlength="1000" required placeholder="Tell visitors what you thought"></textarea><p class="alert">Image uploads are not currently supported.</p><button class="btn bg-primaryButton text-black">Submit review</button></form></div></section> }
-  else if (User.Identity?.IsAuthenticated != true) { <p class="alert mt-6">Please <a class="link" href="/login">log in</a> to leave a review.</p> }
-  else { <p class="alert mt-6">You have already reviewed this attraction.</p> }
-  <nav class="tabs tabs-boxed mt-8"><a class="tab @(Model.Filter == "all" ? "tab-active" : "")" href="?filter=all">All</a><a class="tab @(Model.Filter == "your" ? "tab-active" : "")" href="?filter=your">Your reviews</a><a class="tab" href="?filter=highest-rated">Highest rated</a><a class="tab" href="?filter=most-critical">Most critical</a></nav>
-  <section class="mt-5 space-y-5">@foreach (var card in Model.Reviews) { <article class="card bg-base-100 shadow"><div class="card-body"><div class="flex items-center gap-3"><div class="avatar"><div class="w-10 rounded-full"><img src="@card.User.ProfilePic" alt="@card.User.UserName" /></div></div><h2 class="text-xl">@card.User.UserName</h2><span class="ml-auto font-bold">@card.Review.Rating / 5</span></div><p>@card.Review.Description</p>@if (card.Review.Images.Count > 0) { <div class="grid grid-cols-2 md:grid-cols-4 gap-2">@foreach (var image in card.Review.Images) { <img class="w-full h-36 object-cover rounded" src="@image" alt="Review image" /> }</div> }<div class="flex gap-3 items-center"><button class="btn btn-sm" onclick="toggleReviewLike('@card.Review.Id', this)">♥ <span>@card.Review.Likes</span></button><span>@card.Comments.Count comment(s)</span></div><div class="border-t pt-3 space-y-3">@foreach (var comment in card.Comments) { <div class="bg-gray-50 p-3 rounded"><strong>@comment.User.UserName</strong><p>@comment.Comment.Description</p><button class="btn btn-xs" onclick="toggleComment('@comment.Comment.Id', true, this)">♥ <span>@comment.Comment.Likes</span></button><button class="btn btn-xs" onclick="toggleComment('@comment.Comment.Id', false, this)">👎 <span>@comment.Comment.Dislikes</span></button></div> }@if (User.Identity?.IsAuthenticated == true) { <form action="/comment/createComment/@card.Review.Id" method="post" class="flex gap-2"><input type="hidden" name="pageName" value="@Model.Attraction.Id" /><input name="commentDesc" maxlength="200" required class="input input-bordered flex-1" placeholder="Write a comment" /><button class="btn btn-sm">Submit</button></form> }</div></div></article> }</section>
+@{ ViewData["Title"] = Model.Attraction.Name; }
+
+<main class="attraction-page">
+  <section class="attraction-hero">
+    <img src="@Model.Attraction.Image" alt="@Model.Attraction.Name" />
+    <div class="attraction-hero-copy">
+      <p class="attraction-eyebrow">PARK GUIDE</p>
+      <h1>@Model.Attraction.Name</h1>
+      <p>@Model.Attraction.Description</p>
+      <div class="attraction-tags">@foreach (var tag in Model.Attraction.Tags) { <span>@tag</span> }</div>
+      <div class="attraction-score"><strong>@(Model.AverageRating > 0 ? Model.AverageRating.ToString("F1") : "New")</strong><span>@(Model.AverageRating > 0 ? "out of 5 from visitors" : "Be the first to review")</span></div>
+    </div>
+  </section>
+
+  <section class="attraction-layout">
+    <aside class="attraction-action-card">
+      <p class="attraction-eyebrow">COMMUNITY NOTES</p>
+      @if (User.Identity?.IsAuthenticated == true && !Model.HasReviewed)
+      {
+        <h2>How was it?</h2><p>Share a quick, honest review to help the next visitor.</p>
+        <form action="/review/createReview" method="post">
+          <input type="hidden" name="pageName" value="@Model.Attraction.Id" />
+          <label>Rating<select name="rating" required><option value="">Choose a rating</option>@for (var star = 1; star <= 5; star++) { <option value="@star">@star star@(star == 1 ? "" : "s")</option> }</select></label>
+          <label>Review<textarea name="desc" maxlength="1000" required placeholder="What should other visitors know?"></textarea></label>
+          <button type="submit">Post review</button>
+        </form>
+        <small>Image uploads are not currently supported.</small>
+      }
+      else if (User.Identity?.IsAuthenticated != true)
+      {
+        <h2>Have you been?</h2><p>Log in to add a review, react to community notes, and join Park Circles.</p><a href="/login">Log in to review</a>
+      }
+      else
+      {
+        <h2>Thanks for reviewing.</h2><p>You already shared feedback for this experience. Keep exploring the community notes below.</p><a href="/your-reviews">View your reviews</a>
+      }
+    </aside>
+
+    <section class="attraction-reviews">
+      <div class="attraction-review-heading"><div><p class="attraction-eyebrow">VISITOR REVIEWS</p><h2>What people are saying</h2></div><nav class="review-filters" aria-label="Review filters"><a class="@(Model.Filter == "all" ? "is-active" : "")" href="?filter=all">All</a><a class="@(Model.Filter == "your" ? "is-active" : "")" href="?filter=your">Yours</a><a class="@(Model.Filter == "highest-rated" ? "is-active" : "")" href="?filter=highest-rated">Highest</a><a class="@(Model.Filter == "most-critical" ? "is-active" : "")" href="?filter=most-critical">Critical</a></nav></div>
+      @if (!Model.Reviews.Any())
+      {
+        <div class="review-empty"><strong>No reviews yet.</strong><span>Be the first person to help another park visitor decide.</span></div>
+      }
+      else
+      {
+        <div class="review-list">
+        @foreach (var card in Model.Reviews)
+        {
+          <article class="review-card">
+            <header><img src="@card.User.ProfilePic" alt="@card.User.UserName" /><div><strong>@card.User.UserName</strong><span>Visitor review</span></div><b>@card.Review.Rating<span>/5</span></b></header>
+            <p>@card.Review.Description</p>
+            @if (card.Review.Images.Count > 0) { <div class="review-images">@foreach (var image in card.Review.Images) { <img src="@image" alt="Review image" loading="lazy" /> }</div> }
+            <footer><button type="button" class="review-like" onclick="toggleReviewLike('@card.Review.Id', this)">Helpful <span>@card.Review.Likes</span></button><span>@card.Comments.Count comment@(card.Comments.Count == 1 ? "" : "s")</span></footer>
+            <div class="comment-thread">
+              @foreach (var comment in card.Comments) { <div class="comment-card"><strong>@comment.User.UserName</strong><p>@comment.Comment.Description</p><div><button type="button" onclick="toggleComment('@comment.Comment.Id', true, this)">Helpful <span>@comment.Comment.Likes</span></button><button type="button" onclick="toggleComment('@comment.Comment.Id', false, this)">Not helpful <span>@comment.Comment.Dislikes</span></button></div></div> }
+              @if (User.Identity?.IsAuthenticated == true) { <form action="/comment/createComment/@card.Review.Id" method="post" class="comment-form"><input type="hidden" name="pageName" value="@Model.Attraction.Id" /><label class="sr-only" for="comment-@card.Review.Id">Write a comment</label><input id="comment-@card.Review.Id" name="commentDesc" maxlength="200" required placeholder="Add a respectful comment" /><button type="submit">Comment</button></form> }
+            </div>
+          </article>
+        }
+        </div>
+      }
+    </section>
+  </section>
 </main>
-@section Scripts { <script>async function toggleReviewLike(id,b){const r=await fetch('/review/likePost/'+id,{method:'POST'});if(r.ok){const d=await r.json();b.querySelector('span').textContent=d.likes}} async function toggleComment(id,likes,b){const r=await fetch(`/comment/${likes?'likeComment':'dislikeComment'}/${id}`,{method:'POST'});if(r.ok){const d=await r.json();b.querySelector('span').textContent=likes?d.likes:d.dislikes}}</script> }
+
+<style>
+  .attraction-page { max-width: 1200px; margin: 0 auto; padding: clamp(1.25rem, 4vw, 3.5rem); font-family: Karla, Arial, sans-serif; color: #172033; }
+  .attraction-hero { display: grid; grid-template-columns: minmax(15rem,.85fr) minmax(0,1.15fr); overflow: hidden; border-radius: 1.2rem; background: #fff; box-shadow: 0 16px 36px rgba(18,34,56,.11); }
+  .attraction-hero > img { width: 100%; height: 100%; min-height: 25rem; object-fit: cover; background: #dbe8f1; }
+  .attraction-hero-copy { display: flex; flex-direction: column; align-items: flex-start; padding: clamp(1.5rem,5vw,4rem); background: linear-gradient(145deg,#102e4d,#215d90); color: #fff; }
+  .attraction-eyebrow { margin: 0; color: #f6bd60; font: 800 .7rem/1 Karla,sans-serif; letter-spacing: .14em; }
+  .attraction-hero h1 { margin: .65rem 0; font: 800 clamp(2.5rem,5vw,4.6rem)/.93 Karla,sans-serif; letter-spacing: -.06em; }
+  .attraction-hero-copy > p:not(.attraction-eyebrow) { max-width: 40rem; margin: 0; color: #eaf3f9; font: 1rem/1.6 Karla,sans-serif; }
+  .attraction-tags { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: 1.25rem; }.attraction-tags span { border: 1px solid rgba(255,255,255,.25); border-radius: 99px; background: rgba(255,255,255,.1); padding: .32rem .5rem; color: #fff; font: 800 .68rem Karla,sans-serif; }
+  .attraction-score { display: flex; align-items: center; gap: .65rem; margin-top: auto; padding-top: 2rem; }.attraction-score strong { display: grid; place-items: center; width: 3rem; height: 3rem; border-radius: .75rem; background: #f6bd60; color: #172033; font: 800 1.2rem Karla,sans-serif; }.attraction-score span { color: #e9f2f9; font: .76rem Karla,sans-serif; }
+  .attraction-layout { display: grid; grid-template-columns: minmax(16rem,.62fr) minmax(0,1.38fr); gap: 1.25rem; margin-top: 1.25rem; }.attraction-action-card { align-self: start; border: 1px solid #e0e8ef; border-radius: 1rem; background: #fff; padding: 1.25rem; box-shadow: 0 8px 22px rgba(18,34,56,.06); }.attraction-action-card .attraction-eyebrow,.attraction-review-heading .attraction-eyebrow { color: #1d5b90; }.attraction-action-card h2,.attraction-review-heading h2 { margin: .45rem 0; font: 800 1.45rem Karla,sans-serif; }.attraction-action-card > p:not(.attraction-eyebrow) { margin: .5rem 0 1.1rem; color: #607286; font: .85rem/1.5 Karla,sans-serif; }
+  .attraction-action-card form { display: grid; gap: .8rem; }.attraction-action-card label { display: grid; gap: .35rem; color: #41566a; font: 800 .76rem Karla,sans-serif; }.attraction-action-card select,.attraction-action-card textarea,.comment-form input { box-sizing: border-box; width: 100%; border: 1px solid #ccd9e4; border-radius: .55rem; background: #fff; padding: .7rem; color: #172033; font: 500 .9rem Karla,sans-serif; }.attraction-action-card textarea { min-height: 8rem; resize: vertical; }.attraction-action-card button,.attraction-action-card > a { display: inline-flex; align-items: center; justify-content: center; border: 0; border-radius: .55rem; background: #174577; padding: .75rem; color: #fff; font: 800 .8rem Karla,sans-serif; text-decoration: none; cursor: pointer; }.attraction-action-card small { display: block; margin-top: .8rem; color: #748398; font: .7rem/1.4 Karla,sans-serif; }
+  .attraction-reviews { min-width: 0; }.attraction-review-heading { display: flex; align-items: end; justify-content: space-between; gap: 1rem; margin: 0 0 1rem; }.review-filters { display: flex; flex-wrap: wrap; gap: .35rem; }.review-filters a { border: 1px solid #d7e2eb; border-radius: 99px; padding: .42rem .58rem; color: #52677a; font: 800 .7rem Karla,sans-serif; text-decoration: none; }.review-filters a:hover,.review-filters a.is-active { border-color: #174577; background: #174577; color: #fff; }.review-list { display: grid; gap: .85rem; }.review-card,.review-empty { border: 1px solid #e0e8ef; border-radius: .9rem; background: #fff; padding: 1rem; box-shadow: 0 6px 18px rgba(18,34,56,.05); }
+  .review-card header { display: flex; align-items: center; gap: .65rem; }.review-card header > img { width: 2.45rem; height: 2.45rem; border-radius: 50%; object-fit: cover; background: #e8f0f5; }.review-card header strong,.review-card header span { display: block; }.review-card header strong { font: 800 .9rem Karla,sans-serif; }.review-card header span { margin-top: .14rem; color: #718096; font: .68rem Karla,sans-serif; }.review-card header > b { margin-left: auto; border-radius: .55rem; background: #fff1d3; padding: .42rem .5rem; color: #795012; font: 800 .84rem Karla,sans-serif; }.review-card header > b span { display: inline; color: #795012; font-size: .68rem; }.review-card > p { margin: .85rem 0; color: #405569; font: .9rem/1.55 Karla,sans-serif; }.review-images { display: grid; grid-template-columns: repeat(auto-fit,minmax(8rem,1fr)); gap: .5rem; }.review-images img { width: 100%; height: 8rem; border-radius: .5rem; object-fit: cover; }.review-card footer { display: flex; align-items: center; gap: .7rem; margin-top: .9rem; color: #708093; font: .72rem Karla,sans-serif; }.review-like,.comment-card button { border: 0; border-radius: .45rem; background: #eaf2f7; padding: .4rem .5rem; color: #174577; font: 800 .7rem Karla,sans-serif; cursor: pointer; }
+  .comment-thread { display: grid; gap: .55rem; margin-top: .9rem; border-top: 1px solid #edf0f3; padding-top: .85rem; }.comment-card { border-radius: .55rem; background: #f7fafc; padding: .7rem; }.comment-card strong { font: 800 .75rem Karla,sans-serif; }.comment-card p { margin: .35rem 0; color: #506377; font: .78rem/1.45 Karla,sans-serif; }.comment-card div { display: flex; gap: .4rem; }.comment-card button:last-child { background: #f1f3f5; color: #66778a; }.comment-form { display: flex; gap: .45rem; }.comment-form button { flex: none; border: 0; border-radius: .5rem; background: #174577; padding: .55rem .65rem; color: #fff; font: 800 .72rem Karla,sans-serif; cursor: pointer; }.review-empty { display: grid; gap: .35rem; color: #617286; font: .88rem/1.45 Karla,sans-serif; }.review-empty strong { color: #1b3e62; }.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; }
+  @@media (max-width: 850px) { .attraction-hero { grid-template-columns: 1fr; }.attraction-hero > img { height: 15rem; min-height: 0; }.attraction-layout { grid-template-columns: 1fr; } }
+  @@media (max-width: 520px) { .attraction-page { padding: 1rem; }.attraction-hero-copy { padding: 1.5rem; }.attraction-review-heading { align-items: start; flex-direction: column; }.comment-form { flex-direction: column; }.comment-form button { width: 100%; } }
+</style>
+
+@section Scripts {
+  <script>
+    async function toggleReviewLike(id, button) { const response = await fetch('/review/likePost/' + id, { method: 'POST' }); if (response.ok) { const data = await response.json(); button.querySelector('span').textContent = data.likes; } }
+    async function toggleComment(id, likes, button) { const response = await fetch(`/comment/${likes ? 'likeComment' : 'dislikeComment'}/${id}`, { method: 'POST' }); if (response.ok) { const data = await response.json(); button.querySelector('span').textContent = likes ? data.likes : data.dislikes; } }
+  </script>
+}
