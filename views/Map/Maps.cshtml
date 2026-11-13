@@ -2,17 +2,17 @@
 @{ ViewData["Title"] = "Choose a park map"; }
 <main class="map-hub">
   <section class="map-hub-hero">
-    <p class="map-hub-kicker">WALT DISNEY WORLD &middot; LIVE PLANNERS</p>
+    <p class="map-hub-kicker">CENTRAL FLORIDA &middot; LIVE PLANNERS</p>
     <h1>Pick a park.<br /><em>Plan a better day.</em></h1>
     <p class="map-hub-intro">Live waits, ride filters, and recommendations that balance the line with the walk ahead.</p>
     <a class="map-hub-start" href="/plan"><span class="map-hub-start-sun" aria-hidden="true">&#9788;</span> Start a plan with Sunny <span aria-hidden="true">&rarr;</span></a>
-    <div class="map-hub-legend"><span><i></i>Live wait times</span><span><i></i>Location-aware picks</span><span><i></i>Four parks</span></div>
+    <div class="map-hub-legend"><span><i></i>Live wait times</span><span><i></i>Location-aware picks</span><span><i></i>Five parks</span></div>
   </section>
 
   <section class="map-hub-grid" aria-label="Choose a Disney park map">
   @foreach (var park in Model)
   {
-    var initials = park.Id switch { "magic-kingdom" => "MK", "hollywood-studios" => "HS", "animal-kingdom" => "AK", _ => "EP" };
+    var initials = park.Id switch { "magic-kingdom" => "MK", "hollywood-studios" => "HS", "animal-kingdom" => "AK", "seaworld-orlando" => "SW", _ => "EP" };
     <a class="map-hub-card map-hub-card--@park.Id" href="@park.MapRoute">
       <span class="map-hub-card-art" aria-hidden="true">@initials</span>
       <span class="map-hub-card-content"><small>@park.Tagline</small><strong>@park.Name</strong><em>@(park.Id == "magic-kingdom" ? "Full location-aware planner" : "Full location-aware planner")</em><b>Open planner <span aria-hidden="true">&rarr;</span></b></span>
@@ -27,5 +27,6 @@
 </style>
 
 <style>
+  .map-hub-card--seaworld-orlando{background:linear-gradient(135deg,#064c78,#00a9c7 58%,#74d4df)}
   .map-hub-start{position:relative;z-index:1;display:inline-flex;align-items:center;gap:.6rem;margin-top:1.45rem;padding:.8rem 1rem;border-radius:.7rem;background:#f8cb75;color:#172033;font:800 .9rem Karla,Arial,sans-serif;text-decoration:none;box-shadow:0 5px 14px rgba(0,0,0,.15)}.map-hub-start:hover{transform:translateY(-1px)}.map-hub-start-sun{font-size:1.25rem}
 </style>

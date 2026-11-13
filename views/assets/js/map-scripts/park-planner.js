@@ -31,6 +31,17 @@
       ["Kali River Rapids", "kali-river-rapids", 28.3594, -81.5882, ["family", "adventure"]],
       ["Festival of the Lion King", "festival-of-the-lion-king", 28.3590, -81.5903, ["family", "gentle"]],
       ["Finding Nemo: The Big Blue... and Beyond!", "finding-nemo-the-big-blue-and-beyond", 28.3559, -81.5889, ["family", "gentle"]]
+    ],
+    "seaworld-orlando": [
+      ["Mako", "mako", 28.4102, -81.4635, ["coaster", "adventure"]],
+      ["Kraken", "kraken-unleashed", 28.4091, -81.4656, ["coaster", "adventure"]],
+      ["Manta", "manta", 28.4059, -81.4608, ["coaster", "adventure"]],
+      ["Ice Breaker", "ice-breaker", 28.4126, -81.4627, ["coaster", "family", "adventure"]],
+      ["Pipeline: The Surf Coaster", "pipeline-the-surf-coaster", 28.4106, -81.4623, ["coaster", "adventure"]],
+      ["Journey to Atlantis", "journey-to-atlantis", 28.4092, -81.4622, ["family", "adventure"]],
+      ["Penguin Trek", "penguin-trek", 28.4121, -81.4605, ["coaster", "family"]],
+      ["Infinity Falls", "infinity-falls", 28.4073, -81.4618, ["family", "adventure"]],
+      ["Super Grover's Box Car Derby", "super-grovers-box-car-derby", 28.4107, -81.4601, ["coaster", "family", "gentle"]]
     ]
   };
   const rides = (rideData[config.parkId] || []).map(([name, pageId, lat, lng, categories]) => ({ name, pageId, lat, lng, categories }));

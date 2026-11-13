@@ -13,7 +13,7 @@ public sealed class HomeController(MongoContext database, CatalogueService catal
     public IActionResult Index() => View();
 
     [HttpGet("disney-selection-homepage")]
-    public IActionResult DisneySelectionHomepage() => View(catalogue.Parks);
+    public IActionResult DisneySelectionHomepage() => View(catalogue.Parks.Where(park => park.Id != "seaworld-orlando").ToList());
 
     [HttpGet("plan")]
     public IActionResult Plan() => View(new DayPlanViewModel

@@ -24,7 +24,8 @@ public sealed class CatalogueService
         new("magic-kingdom", "Magic Kingdom", "Classic magic", "Castles, classic attractions, and fireworks from morning through night.", CastleImage, "/map/magickingdom-maps", 6, 28.41874, -81.58121),
         new("epcot", "EPCOT", "Curiosity comes alive", "Big ideas, global flavors, and out-of-this-world adventures.", CoasterImage, "/map/epcot", 5, 28.37470, -81.54940),
         new("hollywood-studios", "Hollywood Studios", "Step into the story", "Star Wars adventures, Pixar play, and show-stopping thrills.", SpotlightImage, "/map/hollywood-studios", 7, 28.35750, -81.55890),
-        new("animal-kingdom", "Animal Kingdom", "Wild by nature", "Immersive lands, living creatures, and expeditions after dark.", "/assets/image/Sunshine%20Attractions-logo/fast-food.png", "/map/animal-kingdom", 8, 28.35530, -81.59020)
+        new("animal-kingdom", "Animal Kingdom", "Wild by nature", "Immersive lands, living creatures, and expeditions after dark.", "/assets/image/Sunshine%20Attractions-logo/fast-food.png", "/map/animal-kingdom", 8, 28.35530, -81.59020),
+        new("seaworld-orlando", "SeaWorld Orlando", "Ocean thrills await", "Coasters, animal encounters, and splashy adventures on International Drive.", "/assets/image/Sunshine%20Attractions-logo/SeaWorld-Orlando.jpeg", "/map/seaworld-orlando", 21, 28.41146, -81.46170)
     ];
 
     // IDs intentionally match the Node/Mongoose data so existing reviews remain associated.
@@ -86,7 +87,18 @@ public sealed class CatalogueService
         new("festival-of-the-lion-king", "Festival of the Lion King", "Shows", SpotlightImage, "Celebrate Simba's journey with acrobatics, music, and larger-than-life puppetry.", ["musical", "live show", "family"], null, "animal-kingdom"),
         new("finding-nemo-the-big-blue-and-beyond", "Finding Nemo: The Big Blue... and Beyond!", "Shows", CastleImage, "A vibrant stage musical that dives into the story of Nemo and friends.", ["musical", "live show", "family"], null, "animal-kingdom"),
         new("yak-and-yeti-restaurant", "Yak & Yeti Restaurant", "Dining", "/assets/image/Sunshine%20Attractions-logo/fast-food.png", "Pan-Asian favorites served in a richly detailed Himalayan village.", ["table service", "Asian", "adventure"], null, "animal-kingdom"),
-        new("tree-of-life-awakenings", "Tree of Life Awakenings", "Shows", SpotlightImage, "Watch the park's iconic tree transform with colorful nighttime projections.", ["nighttime", "projections", "family"], null, "animal-kingdom")
+        new("tree-of-life-awakenings", "Tree of Life Awakenings", "Shows", SpotlightImage, "Watch the park's iconic tree transform with colorful nighttime projections.", ["nighttime", "projections", "family"], null, "animal-kingdom"),
+
+        // SeaWorld Orlando
+        new("mako", "Mako", "Rides", CoasterImage, "A high-speed hypercoaster with soaring airtime moments and sweeping views of the park.", ["rollercoaster", "thrill", "outdoor"], null, "seaworld-orlando"),
+        new("kraken-unleashed", "Kraken Unleashed", "Rides", CoasterImage, "A floorless coaster with inversions and a virtual-reality option when available.", ["rollercoaster", "thrill", "outdoor"], null, "seaworld-orlando"),
+        new("manta", "Manta", "Rides", CoasterImage, "Fly face-down through twists and turns on a ray-inspired coaster.", ["rollercoaster", "thrill", "outdoor"], null, "seaworld-orlando"),
+        new("ice-breaker", "Ice Breaker", "Rides", CoasterImage, "A launch coaster with backward-and-forward launches and a beyond-vertical spike.", ["rollercoaster", "thrill", "family"], null, "seaworld-orlando"),
+        new("pipeline-the-surf-coaster", "Pipeline: The Surf Coaster", "Rides", CoasterImage, "A surf-inspired standing coaster that sends riders racing over the lagoon.", ["rollercoaster", "thrill", "outdoor"], null, "seaworld-orlando"),
+        new("journey-to-atlantis", "Journey to Atlantis", "Rides", SpotlightImage, "A water ride that combines dark-ride storytelling, coaster drops, and a splashdown.", ["water ride", "family", "adventure"], null, "seaworld-orlando"),
+        new("penguin-trek", "Penguin Trek", "Rides", SpotlightImage, "Board a snowmobile-themed family coaster that ends near the penguin habitat.", ["rollercoaster", "family", "indoor"], null, "seaworld-orlando"),
+        new("infinity-falls", "Infinity Falls", "Rides", SpotlightImage, "A river-rapids adventure with a dramatic drop—expect to get wet.", ["water ride", "thrill", "adventure"], null, "seaworld-orlando"),
+        new("super-grovers-box-car-derby", "Super Grover's Box Car Derby", "Rides", CoasterImage, "A kid-friendly coaster in Sesame Street Land.", ["rollercoaster", "family", "gentle"], null, "seaworld-orlando")
     ];
 
     public Attraction? Find(string id) => Attractions.FirstOrDefault(item => item.Id.Equals(id, StringComparison.OrdinalIgnoreCase));

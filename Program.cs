@@ -69,7 +69,8 @@ var queueTimesParkIds = new Dictionary<string, int>(StringComparer.OrdinalIgnore
     ["magic-kingdom"] = 6,
     ["epcot"] = 5,
     ["hollywood-studios"] = 7,
-    ["animal-kingdom"] = 8
+    ["animal-kingdom"] = 8,
+    ["seaworld-orlando"] = 21
 };
 
 app.MapGet("/wait-times/{parkId}", async (string parkId, IHttpClientFactory clients, CancellationToken cancellationToken) =>
